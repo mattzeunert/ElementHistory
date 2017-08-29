@@ -32,7 +32,8 @@ function enableTracking(){
                 actionArguments: actionInfo.actionArguments,
                 oldValue: before,
                 newValue: after,
-                callstack: Error().stack
+                callstack: Error().stack,
+                date: new Date()
             })
 
             return ret

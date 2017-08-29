@@ -9,5 +9,6 @@ describe("A suite", function() {
     expect(lastHistoryItem.oldValue).toEqual(null)
     expect(lastHistoryItem.newValue).toEqual('background: red')
     expect(lastHistoryItem.callstack).toContain('specFunctionName')
+    expect(lastHistoryItem.date).not.toBe(undefined)
   });
 });
