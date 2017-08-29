@@ -1,4 +1,6 @@
 
+window.trackHistEnabled = false
+
 var trackingEventTypes = [
     {
         obj: Element.prototype,
@@ -40,7 +42,7 @@ var trackingEventTypes = [
                         var before = el.className
                         var ret2 = originalAdd.apply(this, arguments)
                         var after = el.className
-                        console.log("called add")
+                        // console.log("called add")
 
                         addHistoryItem(el, 'className', {
                             actionType: 'classList.add call',
@@ -66,6 +68,11 @@ var trackingEventTypes = [
 ]
 
 function enableTracking(){
+
+    if (window.trackHistEnabled ) {
+        return
+    }
+    window.trackHistEnabled = true
     console.log("enable")
     trackingEventTypes.forEach(function(trackingEventType){
         if (trackingEventType.obj && trackingEventType.fnName) {
@@ -94,7 +101,6 @@ function enableTracking(){
                     return originalDescriptor.get.apply(this, arguments)
                 },
                 set: function(){
-                    console.log("set classname")
                     var before = trackingEventType.getValue.apply(this, arguments)
                     var actionInfo = trackingEventType.getActionInfo.apply(this, arguments)                        
                     var ret = originalDescriptor.set.apply(this, arguments)
@@ -118,6 +124,7 @@ function enableTracking(){
     })
     
 }
+console.log("injected")
 
 function addHistoryItem(element, key, data){
     if (!element.__elementHistory) {

@@ -51,17 +51,26 @@ chrome.browserAction.onClicked.addListener(onBrowserActionClicked);
 
 function enableInTab(tabId) {
     if (!tabId) {debugger}
-    console.log("enableindtab", enabledTabs, tabId)
+    // console.log("enableindtab", enabledTabs, tabId)
     enabledTabs.push(tabId)
-    console.log("enabledtabs", enabledTabs)
+    // console.log("enabledtabs", enabledTabs)
+    console.log("calling executescript")
     chrome.tabs.executeScript(tabId, {
         code: `
             var scr = document.createElement("script")
             var code = decodeURI("${encodeURI(trackHistoryCode)}")
-            scr.innerHTML = code
-            document.body.appendChild(scr)
-        `
+            scr.innerHTML = code;
+            (document.documentElement || document.body).appendChild(scr)
+        `,
+        runAt: 'document_start'
     }, function(){
         console.log("injected", arguments)
     })
+
+    /*
+    could this work too? 
+    chrome.tabs.executeScript({
+        file: '/scripts/runsOnPageLoad.js'
+    }); 
+    */
 }
