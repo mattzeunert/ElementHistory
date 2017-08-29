@@ -8,7 +8,7 @@ var trackingEventTypes = [
         },
         getActionInfo(attrName, attrValue){
             return {
-                actionType: 'setAttribute',
+                actionType: 'setAttribute call',
                 historyKey: attrName,
                 actionArguments: [attrName, attrValue]
             }
@@ -26,6 +26,41 @@ var trackingEventTypes = [
                 historyKey: 'className',
                 actionArguments: [newValue]
             }
+        }
+    },
+    {
+        enable: function(){
+            var originalDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'classList')
+            Object.defineProperty(Element.prototype, 'classList', {
+                get: function(){
+                    var ret = originalDescriptor.get.apply(this, arguments)
+                    var originalAdd = ret.add
+                    var el = this
+                    ret.add = function(){
+                        var before = el.className
+                        var ret2 = originalAdd.apply(this, arguments)
+                        var after = el.className
+                        console.log("called add")
+
+                        addHistoryItem(el, 'className', {
+                            actionType: 'classList.add call',
+                            actionArguments: Array.from(arguments),
+                            oldValue: before,
+                            newValue: after
+                        })
+                        return ret2
+                    }
+                    return ret
+                },
+                set: function(){
+                    console.log("todo: track set classList")
+                    return originalDescriptor.set.apply(this, arguments)
+                }
+            })
+            
+        },
+        disable: function() {
+
         }
     }
 ]
@@ -52,7 +87,7 @@ function enableTracking(){
                 return ret
             }
         }
-        if (trackingEventType.obj && trackingEventType.key) {
+        else if (trackingEventType.obj && trackingEventType.key) {
             var originalDescriptor = Object.getOwnPropertyDescriptor(trackingEventType.obj, trackingEventType.key)
             Object.defineProperty(trackingEventType.obj, trackingEventType.key, {
                 get: function(){
@@ -73,6 +108,11 @@ function enableTracking(){
                     return ret
                 }
             })
+        } else if (trackingEventType.enable && trackingEventType.disable) {
+            trackingEventType.enable()
+        }
+        else {
+            throw "unknown tracking type"
         }
         
     })
