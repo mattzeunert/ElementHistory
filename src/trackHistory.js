@@ -64,8 +64,38 @@ var trackingEventTypes = [
         disable: function() {
 
         }
+    },
+    {
+        enable: function(){
+            var originalDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML")
+            Object.defineProperty(Element.prototype, "innerHTML", {
+                get: function(){
+                    return originalDescriptor.get.apply(this, arguments)
+                },
+                set: function(innerHTML){
+                    var ret = originalDescriptor.set.apply(this, arguments)
+                    var parentEl = this;
+                    iterateOverAllChildren(this, function(child) {
+                        addHistoryItem(child, 'className', {
+                            actionType: "innerHTML assignment on parent",
+                            actionArguments: [parentEl, innerHTML],
+                            oldValue: null,
+                            newValue: child.className
+                        })
+                    })
+                    return ret
+                }
+            })
+        },
+        disable: function() {
+
+        }
     }
 ]
+
+function iterateOverAllChildren(el, callback){
+    el.querySelectorAll("*").forEach(callback)
+}
 
 function enableTracking(){
 

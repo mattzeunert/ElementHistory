@@ -25,12 +25,22 @@ describe("A suite", function() {
   })
   it("Track classList.add calls", function(){
     var el = document.createElement('div')
-    debugger
     el.classList.add('cake')
     var lastHistoryItem = getLastHistoryItem(el, 'className')
     expect(lastHistoryItem.actionType).toEqual('classList.add call')
     expect(lastHistoryItem.actionArguments).toEqual(['cake'])
     expect(lastHistoryItem.oldValue).toEqual('')
+    expect(lastHistoryItem.newValue).toEqual('cake')
+  })
+
+  it("Tracks class assignments when creating element by assigning to innerHTML", function(){
+    var parentEl = document.createElement('div')
+    parentEl.innerHTML = '<div class="cake"></div>'
+    var el = parentEl.children[0]
+    var lastHistoryItem = getLastHistoryItem(el, 'className')
+    expect(lastHistoryItem.actionType).toEqual('innerHTML assignment on parent')
+    expect(lastHistoryItem.actionArguments).toEqual([parentEl, '<div class="cake"></div>'])
+    expect(lastHistoryItem.oldValue).toEqual(null)
     expect(lastHistoryItem.newValue).toEqual('cake')
   })
 
