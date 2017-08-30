@@ -1,6 +1,4 @@
 
-window.trackHistEnabled = false
-
 var trackingEventTypes = [
     {
         obj: Element.prototype,
@@ -98,7 +96,6 @@ function iterateOverAllChildren(el, callback){
 }
 
 function enableTracking(){
-
     if (window.trackHistEnabled ) {
         return
     }
@@ -166,7 +163,7 @@ function addHistoryItem(element, key, data){
     data.callstack = Error().stack,
     data.date = new Date()
     element.__elementHistory[key].push(data)
-    console.log("added history", key, data.actionType)
+    // console.log("added history", key, data.actionType)
 }
 
 function disableTracking(){
