@@ -10,12 +10,13 @@
   "background": {
     "scripts": ["background.js"]
   },
+  "devtools_page": "devtools.html",
   "permissions": [
       "http://*/*",
       "https://*/*",
       "file://*/*"
   ],
   "web_accessible_resources": [
-      "trackHistory.js",
+      "trackHistory.js"
   ]
 }
