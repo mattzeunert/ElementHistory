@@ -1,3 +1,7 @@
+// Todo
+// - some way to print to console by clicking on getter would be useful ---- or, can I show it in sidemenu of elements panel?
+// - better tab session tracking, indicator of whether it's on in this tab
+
 
 var trackingEventTypes = [
     {
