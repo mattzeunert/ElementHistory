@@ -35,7 +35,13 @@ class AttributeHistory extends React.Component {
 
             {this.props.history.map(function(history){
                 return <div>
-                    <div>{history.actionType}: "{history.newValue}"</div>
+                    <div>
+                        {history.actionType}: "{history.newValue}"
+                        <button onClick={() => {
+                            console.log("inspectedwindow", chrome.devtools.inspectedWindow)
+                            chrome.devtools.inspectedWindow.eval(`console.log("eval!!!", decodeURI("${encodeURI(history.callstack)}"))`)
+                        }}>print stack {history.callstack}</button>
+                    </div>
                 </div>
             })}
         </div>
