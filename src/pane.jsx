@@ -3,14 +3,18 @@ var ReactDom = require("react-dom")
 var ErrorStackParser = require("error-stack-parser")
 
 if (chrome.devtools) {
+    update()
     chrome.devtools.panels.elements.onSelectionChanged.addListener(function() {
+        update()
+    });
+    function update(){
         chrome.devtools.inspectedWindow.eval("({history: $0.__elementHistory})", function (res) {
             if (!res) {
                 res = {}
             }
             ReactDom.render(<ElementHistory history={res.history} />, document.querySelector("#app"))   
         });
-    });
+    }
 } else { 
 
     // data for test page
