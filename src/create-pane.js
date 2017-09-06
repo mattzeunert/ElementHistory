@@ -1,4 +1,4 @@
-chrome.devtools.panels.elements.createSidebarPane("My Sidebar",
+chrome.devtools.panels.elements.createSidebarPane("Element History",
 function(sidebar) {
     // sidebar initialization code here
     console.log(arguments)

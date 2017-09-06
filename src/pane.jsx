@@ -92,23 +92,30 @@ class ElementHistory extends React.Component {
 class AttributeHistory extends React.Component {
     render() {
         
-        return <div >
-            <h2 style={{cursor: "pointer"}} onClick={() => this.props.toggleExpanded()}>{this.props.isExpanded ? "▲" : "▼"}{this.props.historyKey}</h2>
-            <br/>
+        return <div>
+            <h2 onClick={() => this.props.toggleExpanded()} className="attribute-history-title">
+                { /* <div style="attribute-history-arrow">{this.props.isExpanded ? "▲" : "▼"}</div> */ }
+                {this.props.historyKey}
+            </h2>
 
-            {this.props.isExpanded ? this.props.history.map(function(history){
-                 //var frames = ErrorStackParser.parse({stack: history.callstack}) 
-                //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
-                return <div style={{marginLeft: 20}} className="attribute-history-item">
-                    <div>
-                        {history.actionType}: "{history.newValue}"
-                        <button onClick={() => {
-                            console.log("inspectedwindow", chrome.devtools.inspectedWindow)
-                            chrome.devtools.inspectedWindow.eval(`console.log("eval!!!", decodeURI("${encodeURI(history.callstack)}"))`)
-                        }}>Print callstack</button>
+            <div className="attribute-history-list-container">
+                {(this.props.isExpanded || true) ? this.props.history.map(function(history){
+                    //var frames = ErrorStackParser.parse({stack: history.callstack}) 
+                    //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
+                    var printCallStackButton = <button className="print-callstack-button" onClick={() => {
+                        chrome.devtools.inspectedWindow.eval(`console.log("eval!!!", decodeURI("${encodeURI(history.callstack)}"))`)
+                    }}>Print callstack</button>
+                    return <div className="attribute-history-item">
+                        <div>
+                            <div className="attribute-history-item_action-type">
+                                {history.actionType} {printCallStackButton}
+                            </div>
+                            <div className="attribute-history-item_new-value">"{history.newValue}"</div>
+                            
+                        </div>
                     </div>
-                </div>
-            }) : null}
+                }) : null}
+            </div>
         </div>
     }
 }

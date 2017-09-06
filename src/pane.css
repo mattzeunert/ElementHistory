@@ -1,3 +1,45 @@
+body {
+    font-family: Menlo, Arial;
+    font-size: 12px;
+    line-height: 14px;
+    margin: 0;
+}
+h2 {
+    margin: 0;
+    margin-bottom: 2px;
+    font-size: 14px;
+}
 .attribute-history-item {
     border-bottom: 1px solid #ddd;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.attribute-history-item:last-child {
+    border-bottom: none;
+}
+.attribute-history-item_new-value, 
+.attribute-history-item_action-type {
+    padding-left: 10px;
+}
+.attribute-history-item_new-value {
+    color: rgb(196, 26, 22);
+    font-size: 10px;
+    padding-top: 2px;
+    font-family: monospace;
+}
+
+.attribute-history-list-container {
+
+}
+.print-callstack-button {
+    float: right;
+    border: none;
+    background: none;
+    color: #1f4eff;
+    cursor: pointer;
+}
+
+.attribute-history-title {
+    background: #ddd;
+    padding: 5px;
 }
