@@ -166,7 +166,7 @@ function addHistoryItem(element, key, data){
     }
     data.callstack = Error().stack.split("\n").slice(3).join("\n"),
     data.date = new Date()
-    element.__elementHistory[key].push(data)
+    element.__elementHistory[key].unshift(data)
     // console.log("added history", key, data.actionType)
 }
 
