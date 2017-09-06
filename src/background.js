@@ -1,4 +1,5 @@
-let enabledTabs = []
+let sessions = {}
+
 
 let trackHistoryCode = "console.log('track history code not loaded yet')"
 fetch(chrome.extension.getURL("trackHistory.js"))
@@ -13,8 +14,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
     console.log("changeinfo", changeInfo, tabId)
 
     if (changeInfo.status === "loading") {
-        if (enabledTabs.includes(tabId)) {
-            
+        if (isEnabledInTab(tabId)) {
             enableInTab(tabId)
         }
 
@@ -41,18 +41,41 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 //     }
 // })
 
+function isEnabledInTab(tabId) {
+    return sessions[tabId] && sessions[tabId].enabled
+}
+
 function onBrowserActionClicked(tab) {
-    enabledTabs.push(tab.id)
-    enableInTab(tab.id)
+    if (isEnabledInTab(tab.id)){ 
+        disableInTab(tab.id)
+        // todo: actually disable tracking in this tab, don't wait till next page relaod
+    }
+    else {
+        enableInTab(tab.id)
+    }
     
     console.log("clicked", tab)
 }
 chrome.browserAction.onClicked.addListener(onBrowserActionClicked);
 
+function disableInTab(tabId) {
+    sessions[tabId] = null
+    chrome.browserAction.setBadgeText({
+        text: "",
+        tabId: tabId,
+    })
+}
+
 function enableInTab(tabId) {
     if (!tabId) {debugger}
     // console.log("enableindtab", enabledTabs, tabId)
-    enabledTabs.push(tabId)
+    sessions[tabId] = {
+        enabled: true
+    }
+    chrome.browserAction.setBadgeText({
+        text: "ON",
+        tabId: tabId,
+    })
     // console.log("enabledtabs", enabledTabs)
     console.log("calling executescript")
     chrome.tabs.executeScript(tabId, {
