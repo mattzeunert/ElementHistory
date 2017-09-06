@@ -1,5 +1,5 @@
 body {
-    font-family: Menlo, Arial;
+    font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
     font-size: 12px;
     line-height: 14px;
     margin: 0;
@@ -7,7 +7,7 @@ body {
 h2 {
     margin: 0;
     margin-bottom: 2px;
-    font-size: 14px;
+    font-size: 12px;
 }
 .attribute-history-item {
     border-bottom: 1px solid #ddd;

@@ -5,13 +5,15 @@ var ErrorStackParser = require("error-stack-parser")
 if (chrome.devtools) {
     chrome.devtools.panels.elements.onSelectionChanged.addListener(function() {
         chrome.devtools.inspectedWindow.eval("({history: $0.__elementHistory})", function (res) {
-            console.log(res && res.history)
-            if (res && res.history) {
-                ReactDom.render(<ElementHistory history={res.history} />, document.querySelector("#app"))   
+            if (!res) {
+                res = {}
             }
+            ReactDom.render(<ElementHistory history={res.history} />, document.querySelector("#app"))   
         });
     });
-} else {
+} else { 
+
+    // data for test page
     setTimeout(function(){
         var h = {
             "className": [
@@ -63,6 +65,21 @@ class ElementHistory extends React.Component {
         }
     }
     render() {
+        if (!this.props.history) {
+            return <div style={{padding: 5}}>
+                <p>
+                    No history available for this element.
+                </p>
+                <p>
+                    Do you have history collection enabled in this tab? Was it enabled when this element was updated?
+                </p>
+                {/* todo: i know if user has histoyr collection enabled inthis tab, instead if they don't have it eanbled and there's not histoyr tell them how to enable */}
+                <p>
+                    Attribute change not tracked properly? Report missing tracking <a target="_blank" href="https://github.com/mattzeunert/ElementHistory/issues">here</a>.
+                </p>
+            </div>
+        }
+
         return <div>
             {Object.keys(this.props.history).map((historyKey) => {
                 const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
