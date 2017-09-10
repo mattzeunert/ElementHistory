@@ -84,6 +84,8 @@ class ElementHistory extends React.Component {
             </div>
         }
 
+        
+
         return <div>
             {Object.keys(this.props.history).map((historyKey) => {
                 const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
