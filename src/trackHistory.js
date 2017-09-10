@@ -145,7 +145,7 @@ function enableTracking(){
     }
     Error.stackTraceLimit = Infinity;
     window.trackHistEnabled = true
-    console.log("enable")
+    console.log("Enabling ElementHistory tracking")
     trackingEventTypes.forEach(function(trackingEventType){
         if (trackingEventType.obj && trackingEventType.fnName) {
             trackingEventType.originalFunction = trackingEventType.obj[trackingEventType.fnName];

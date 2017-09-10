@@ -49,7 +49,6 @@ describe("A suite", function() {
       var el = document.createElement("div")
       $(el).css("min-height", "20px"); // equivalent to el.style.minHeight = "20px"
       var lastHistoryItem = getLastHistoryItem(el, 'style')
-      console.log(lastHistoryItem)
       expect(lastHistoryItem.newValue).toBe("min-height: 20px;")
     })
   })
