@@ -44,5 +44,15 @@ describe("A suite", function() {
     expect(lastHistoryItem.newValue).toEqual('cake')
   })
 
+  describe("jQuery", function(){
+    it("Detects where minHeight style was set", function(){
+      var el = document.createElement("div")
+      $(el).css("min-height", "20px"); // equivalent to el.style.minHeight = "20px"
+      var lastHistoryItem = getLastHistoryItem(el, 'style')
+      console.log(lastHistoryItem)
+      expect(lastHistoryItem.newValue).toBe("min-height: 20px;")
+    })
+  })
+
   // todo: make sure classlist and .setAttribute(class) are also tracked under className
 });

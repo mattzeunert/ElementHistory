@@ -16,7 +16,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'src/trackHistory.js',
-      'src/**/*.spec.js'
+      'src/**/*.spec.js',
+      'node_modules/jquery/dist/jquery.js'
     ],
 
 
