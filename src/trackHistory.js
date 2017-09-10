@@ -143,6 +143,7 @@ function enableTracking(){
     if (window.trackHistEnabled ) {
         return
     }
+    Error.stackTraceLimit = Infinity;
     window.trackHistEnabled = true
     console.log("enable")
     trackingEventTypes.forEach(function(trackingEventType){
