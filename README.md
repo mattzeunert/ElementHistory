@@ -4,6 +4,8 @@ brief description
 
 chrome download link
 
+# how to use chrome extension
+
 # Screenshots
 
 todo
