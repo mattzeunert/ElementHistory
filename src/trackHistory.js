@@ -1,8 +1,3 @@
-// Todo
-// - some way to print to console by clicking on getter would be useful ---- or, can I show it in sidemenu of elements panel?
-// - better tab session tracking, indicator of whether it's on in this tab
-
-
 var trackingEventTypes = [
     {
         obj: Element.prototype,
@@ -16,6 +11,25 @@ var trackingEventTypes = [
                 historyKey: attrName,
                 actionArguments: [attrName, attrValue]
             }
+        }
+    },
+    {
+        originalCreateElement: document.createElement,
+        enable: function(){
+            originalCreateElement = this.originalCreateElement
+            document.createElement = function(){
+                var el = originalCreateElement.apply(this, arguments)
+                addHistoryItem(el, 'ElementCreation', {
+                    actionType: 'document.createElement',
+                    actionArguments: Array.from(arguments),
+                    oldValue: "n/a",
+                    newValue: "n/a"
+                })
+                return el
+            }
+        },
+        disable: function(){
+
         }
     },
     {
@@ -83,6 +97,12 @@ var trackingEventTypes = [
                             actionArguments: [parentEl, innerHTML],
                             oldValue: null,
                             newValue: child.className
+                        })
+                        addHistoryItem(child, 'ElementCreation', {
+                            actionType: "innerHTML assignment on parent",
+                            actionArguments: [parentEl, innerHTML],
+                            oldValue: null,
+                            newValue: "n/a"
                         })
                     })
                     return ret

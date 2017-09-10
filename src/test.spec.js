@@ -44,6 +44,26 @@ describe("A suite", function() {
     expect(lastHistoryItem.newValue).toEqual('cake')
   })
 
+  describe("Tracking element creation", function(){
+    it("Tracks when elements are created using createElement", function(){
+      debugger
+      var el = document.createElement("span")
+      var lastHistoryItem = getLastHistoryItem(el, 'ElementCreation')
+      expect(lastHistoryItem.actionType).toBe("document.createElement")
+      expect(lastHistoryItem.actionArguments[0]).toBe("span")
+      expect(lastHistoryItem.newValue).toBe("n/a")
+    })
+    it("Tracks when elements are created by innerHTML assignments", function(){
+      var parentEl = document.createElement("div")
+      parentEl.innerHTML = "<span>Hello <a>World!</a>!</span>"
+      var el = parentEl.querySelector("a")
+      var lastHistoryItem = getLastHistoryItem(el, 'ElementCreation')
+      expect(lastHistoryItem.actionType).toBe("innerHTML assignment on parent")
+      expect(lastHistoryItem.actionArguments[1]).toBe("<span>Hello <a>World!</a>!</span>")
+      expect(lastHistoryItem.newValue).toBe("n/a")
+    })
+  })
+
   describe("jQuery", function(){
     it("Detects where minHeight style was set", function(){
       var el = document.createElement("div")
