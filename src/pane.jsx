@@ -1,6 +1,7 @@
 var React = require("react")
 var ReactDom = require("react-dom")
 var ErrorStackParser = require("error-stack-parser")
+import {sortBy} from 'lodash'
 
 if (chrome.devtools) {
     update()
@@ -84,10 +85,22 @@ class ElementHistory extends React.Component {
             </div>
         }
 
+        let historyKeys = Object.keys(this.props.history)
+        historyKeys =  sortBy(historyKeys, function(historyKey){
+            if (historyKey === "ElementCreation") {
+                return -2;
+            }
+            // todo: tracke element content, make it second thing
+            if (historyKey === "") {
+
+            }
+            return historyKey
+        })
         
 
+
         return <div>
-            {Object.keys(this.props.history).map((historyKey) => {
+            {historyKeys.map((historyKey) => {
                 const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
                 return <div>
                     <AttributeHistory
