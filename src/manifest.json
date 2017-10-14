@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "ElementHistory",
-  "description": "asdfsd",
+  "description": "See what code created or updated a DOM element",
   "version": "1.0",
 
   "browser_action": {
