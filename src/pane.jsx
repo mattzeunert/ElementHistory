@@ -1,3 +1,5 @@
+const NotApplicable = 'ElementHistory value: not applicable'
+
 var React = require("react")
 var ReactDom = require("react-dom")
 var ErrorStackParser = require("error-stack-parser")
@@ -146,12 +148,20 @@ class AttributeHistory extends React.Component {
                         delete historyWithoutCallStack.callstack
                         chrome.devtools.inspectedWindow.eval(`console.log(JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}")));console.log(decodeURI("${encodeURI(history.callstack)}"))`)
                     }}>Print callstack</button>
+                    let newValue = history.newValue
+                    let newValueClassName = 'attribute-history-item_new-value '
+                    if (newValue === NotApplicable) {
+                        newValue = '(n/a)'
+                        newValueClassName += ' attribute-history-item_new-value--na'
+                    } else {
+                        newValue = '"' + newValue + '"'
+                    }
                     return <div className="attribute-history-item">
                         <div>
                             <div className="attribute-history-item_action-type">
                                 {history.actionType} {printCallStackButton}
                             </div>
-                            <div className="attribute-history-item_new-value">"{history.newValue}"</div>
+                            <div className={newValueClassName}>{newValue}</div>
                             
                         </div>
                     </div>

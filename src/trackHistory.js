@@ -1,3 +1,5 @@
+const NotApplicable = 'ElementHistory value: not applicable'
+
 var trackingEventTypes = [
     {
         obj: Element.prototype,
@@ -17,7 +19,7 @@ var trackingEventTypes = [
         obj: Element.prototype,
         fnName: 'appendChild',
         getValue() {
-            return 'n/a'
+            return NotApplicable
         },
         getActionInfo(insertedElement) {
             return {
@@ -39,8 +41,8 @@ var trackingEventTypes = [
                 addHistoryItem(el, 'ElementCreation', {
                     actionType: 'document.createElement',
                     actionArguments: Array.from(arguments),
-                    oldValue: "n/a",
-                    newValue: "n/a"
+                    oldValue: NotApplicable,
+                    newValue: NotApplicable
                 })
                 return el
             }
@@ -121,7 +123,7 @@ var trackingEventTypes = [
                             actionType: "innerHTML assignment on parent",
                             actionArguments: [parentEl, innerHTML],
                             oldValue: null,
-                            newValue: "n/a",
+                            newValue: NotApplicable,
                             error: error
                         })
                     })

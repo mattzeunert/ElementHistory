@@ -67,7 +67,7 @@ describe("A suite", function() {
       var lastHistoryItem = getLastHistoryItem(el, 'ElementCreation')
       expect(lastHistoryItem.actionType).toBe("document.createElement")
       expect(lastHistoryItem.actionArguments[0]).toBe("span")
-      expect(lastHistoryItem.newValue).toBe("n/a")
+      expect(lastHistoryItem.newValue).toBe(NotApplicable)
     })
     it("Tracks when elements are created by innerHTML assignments", function(){
       var parentEl = document.createElement("div")
@@ -76,7 +76,7 @@ describe("A suite", function() {
       var lastHistoryItem = getLastHistoryItem(el, 'ElementCreation')
       expect(lastHistoryItem.actionType).toBe("innerHTML assignment on parent")
       expect(lastHistoryItem.actionArguments[1]).toBe("<span>Hello <a>World!</a>!</span>")
-      expect(lastHistoryItem.newValue).toBe("n/a")
+      expect(lastHistoryItem.newValue).toBe(NotApplicable)
     })
   })
 
@@ -89,7 +89,7 @@ describe("A suite", function() {
     functionName()
     var lastHistoryItem = getLastHistoryItem(child, 'Insertion')
     expect(lastHistoryItem.actionType).toBe("appendChild")
-    expect(lastHistoryItem.newValue).toBe("n/a")
+    expect(lastHistoryItem.newValue).toBe(NotApplicable)
     expect(lastHistoryItem.callstack.split('\n')[0]).toContain('functionName')
   })
 
