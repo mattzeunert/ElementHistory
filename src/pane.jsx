@@ -139,7 +139,9 @@ class AttributeHistory extends React.Component {
                     //var frames = ErrorStackParser.parse({stack: history.callstack}) 
                     //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
                     var printCallStackButton = <button className="print-callstack-button" onClick={() => {
-                        chrome.devtools.inspectedWindow.eval(`console.log("eval!!!", decodeURI("${encodeURI(history.callstack)}"))`)
+                        const historyWithoutCallStack = Object.assign({}, history)
+                        delete historyWithoutCallStack.callstack
+                        chrome.devtools.inspectedWindow.eval(`console.log(JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}")));console.log(decodeURI("${encodeURI(history.callstack)}"))`)
                     }}>Print callstack</button>
                     return <div className="attribute-history-item">
                         <div>
