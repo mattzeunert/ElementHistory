@@ -5,7 +5,10 @@ function getLastHistoryItem(el, historyKey){
 describe("A suite", function() {
   it("It tracks setAttribute calls", function specFunctionName() {
     var el = document.createElement('div')
-    el.setAttribute('style', 'background: red')
+    function functionName() {
+      el.setAttribute('style', 'background: red')
+    }
+    functionName()
     var lastHistoryItem = getLastHistoryItem(el, 'style')
     expect(lastHistoryItem.actionType).toEqual('setAttribute call')
     expect(lastHistoryItem.actionArguments).toEqual(['style', 'background: red'])
@@ -13,6 +16,7 @@ describe("A suite", function() {
     expect(lastHistoryItem.newValue).toEqual('background: red')
     expect(lastHistoryItem.callstack).toContain('specFunctionName')
     expect(lastHistoryItem.date).not.toBe(undefined)
+    expect(lastHistoryItem.callstack.split('\n')[0]).toContain("functionName")
   });
   it("Tracks className assignments", function(){
     var el = document.createElement('div')
@@ -33,16 +37,29 @@ describe("A suite", function() {
     expect(lastHistoryItem.newValue).toEqual('cake')
   })
 
-  it("Tracks class assignments when creating element by assigning to innerHTML", function(){
-    var parentEl = document.createElement('div')
-    parentEl.innerHTML = '<div class="cake"></div>'
-    var el = parentEl.children[0]
-    var lastHistoryItem = getLastHistoryItem(el, 'className')
-    expect(lastHistoryItem.actionType).toEqual('innerHTML assignment on parent')
-    expect(lastHistoryItem.actionArguments).toEqual([parentEl, '<div class="cake"></div>'])
-    expect(lastHistoryItem.oldValue).toEqual(null)
-    expect(lastHistoryItem.newValue).toEqual('cake')
+  describe("Tracks class assignments when creating element by assigning to innerHTML", function(){
+    it("", function(){
+      var parentEl = document.createElement('div')
+      parentEl.innerHTML = '<div class="cake"></div>'
+      var el = parentEl.children[0]
+      var lastHistoryItem = getLastHistoryItem(el, 'className')
+      expect(lastHistoryItem.actionType).toEqual('innerHTML assignment on parent')
+      expect(lastHistoryItem.actionArguments).toEqual([parentEl, '<div class="cake"></div>'])
+      expect(lastHistoryItem.oldValue).toEqual(null)
+      expect(lastHistoryItem.newValue).toEqual('cake')
+    })
+    it("has correct callstack for nested items", function(){
+      var parentEl = document.createElement('div')
+      function functionName() {
+        parentEl.innerHTML = '<div><span className="sth"></span></div>'
+      }
+      functionName()
+      var el = parentEl.children[0].children[0]
+      var lastHistoryItem = getLastHistoryItem(el, 'className')
+      expect(lastHistoryItem.callstack.split('\n')[0]).toContain('functionName')
+    })
   })
+
 
   describe("Tracking element creation", function(){
     it("Tracks when elements are created using createElement", function(){

@@ -89,6 +89,7 @@ var trackingEventTypes = [
                     return originalDescriptor.get.apply(this, arguments)
                 },
                 set: function(innerHTML){
+                    var error = Error()
                     var ret = originalDescriptor.set.apply(this, arguments)
                     var parentEl = this;
                     iterateOverAllChildren(this, function(child) {
@@ -96,13 +97,15 @@ var trackingEventTypes = [
                             actionType: "innerHTML assignment on parent",
                             actionArguments: [parentEl, innerHTML],
                             oldValue: null,
-                            newValue: child.className
+                            newValue: child.className,
+                            error: error
                         })
                         addHistoryItem(child, 'ElementCreation', {
                             actionType: "innerHTML assignment on parent",
                             actionArguments: [parentEl, innerHTML],
                             oldValue: null,
-                            newValue: "n/a"
+                            newValue: "n/a",
+                            error: error
                         })
                     })
                     return ret
@@ -216,7 +219,7 @@ function enableTracking(){
     })
     
 }
-console.log("injected")
+
 
 function addHistoryItem(element, key, data){
     if (!element.__elementHistory) {
@@ -225,7 +228,13 @@ function addHistoryItem(element, key, data){
     if (!element.__elementHistory[key]) {
         element.__elementHistory[key] = []
     }
-    data.callstack = Error().stack.split("\n").slice(3).join("\n"),
+    if (data.error) {
+        data.callstack = data.error.stack.split("\n").slice(2).join("\n")
+        delete data.errors
+    }
+    else {
+        data.callstack = Error().stack.split("\n").slice(3).join("\n")
+    }
     data.date = new Date()
     element.__elementHistory[key].unshift(data)
     // console.log("added history", key, data.actionType)
