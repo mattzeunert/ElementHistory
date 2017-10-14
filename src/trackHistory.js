@@ -14,6 +14,23 @@ var trackingEventTypes = [
         }
     },
     {
+        obj: Element.prototype,
+        fnName: 'appendChild',
+        getValue() {
+            return 'n/a'
+        },
+        getActionInfo(insertedElement) {
+            return {
+                actionType: 'appendChild',
+                historyKey: 'Insertion',
+                actionArguments: [this]
+            }
+        },
+        getElement(insertedElement) {
+            return insertedElement
+        }
+    },
+    {
         originalCreateElement: document.createElement,
         enable: function(){
             originalCreateElement = this.originalCreateElement
@@ -178,8 +195,13 @@ function enableTracking(){
     
                 var ret = trackingEventType.originalFunction.apply(this, arguments)
                 var after = trackingEventType.getValue.apply(this, arguments)
+
+                var element = this
+                if (trackingEventType.getElement) {
+                    element = trackingEventType.getElement.apply(this, arguments)
+                }
     
-                addHistoryItem(this, actionInfo.historyKey, {
+                addHistoryItem(element, actionInfo.historyKey, {
                     actionType: actionInfo.actionType,
                     actionArguments: actionInfo.actionArguments,
                     oldValue: before,
@@ -241,7 +263,7 @@ function addHistoryItem(element, key, data){
 }
 
 function disableTracking(){
-    
+    throw "todo"
 }
 
 enableTracking()

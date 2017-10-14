@@ -63,7 +63,6 @@ describe("A suite", function() {
 
   describe("Tracking element creation", function(){
     it("Tracks when elements are created using createElement", function(){
-      debugger
       var el = document.createElement("span")
       var lastHistoryItem = getLastHistoryItem(el, 'ElementCreation')
       expect(lastHistoryItem.actionType).toBe("document.createElement")
@@ -79,6 +78,19 @@ describe("A suite", function() {
       expect(lastHistoryItem.actionArguments[1]).toBe("<span>Hello <a>World!</a>!</span>")
       expect(lastHistoryItem.newValue).toBe("n/a")
     })
+  })
+
+  it("Tracks when an element is inserted into the DOM with appendChild", function(){
+    var parent = document.createElement("div")
+    var child = document.createElement("span")
+    function functionName() {
+      parent.appendChild(child)
+    }
+    functionName()
+    var lastHistoryItem = getLastHistoryItem(child, 'Insertion')
+    expect(lastHistoryItem.actionType).toBe("appendChild")
+    expect(lastHistoryItem.newValue).toBe("n/a")
+    expect(lastHistoryItem.callstack.split('\n')[0]).toContain('functionName')
   })
 
   describe("jQuery", function(){

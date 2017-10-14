@@ -90,6 +90,9 @@ class ElementHistory extends React.Component {
             if (historyKey === "ElementCreation") {
                 return "aaaa";
             }
+            if (historyKey === "Insertion") {
+                return "aaab";
+            }
             // todo: tracke element content, make it second thing
             if (historyKey === "") {
 
