@@ -88,7 +88,7 @@ class ElementHistory extends React.Component {
         let historyKeys = Object.keys(this.props.history)
         historyKeys =  sortBy(historyKeys, function(historyKey){
             if (historyKey === "ElementCreation") {
-                return -2;
+                return "aaaa";
             }
             // todo: tracke element content, make it second thing
             if (historyKey === "") {
