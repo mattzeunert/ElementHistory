@@ -170,7 +170,7 @@ class AttributeHistory extends React.Component {
                     } else {
                         newValue = '"' + newValue + '"'
                     }
-                    return <div className="attribute-history-item" key={history.newValue + history.callstack}>
+                    return <div className="attribute-history-item" key={history.id}>
                         <div>
                             <div className="attribute-history-item_action-type">
                                 {history.actionType} {printCallStackButton}

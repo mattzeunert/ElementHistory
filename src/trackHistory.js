@@ -1,5 +1,6 @@
 function load() {
     var NotApplicable = 'ElementHistory value: not applicable'
+    let id = 1
     
     var trackingEventTypes = [
         {
@@ -260,7 +261,7 @@ function load() {
         else {
             data.callstack = Error().stack.split("\n").slice(3).join("\n")
         }
-        data.id = 
+        data.id = id++
         data.date = new Date().toString()
         element.__elementHistory[key].unshift(data)
         // console.log("added history", key, data.actionType)
