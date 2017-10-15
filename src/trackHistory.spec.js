@@ -1,3 +1,5 @@
+const NotApplicable = 'ElementHistory value: not applicable'
+
 function getLastHistoryItem(el, historyKey){
   return el.__elementHistory[historyKey][0]
 }
@@ -101,6 +103,4 @@ describe("A suite", function() {
       expect(lastHistoryItem.newValue).toBe("min-height: 20px;")
     })
   })
-
-  // todo: make sure classlist and .setAttribute(class) are also tracked under className
 });
