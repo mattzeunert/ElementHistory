@@ -145,10 +145,13 @@ class AttributeHistory extends React.Component {
     render() {
         
         return <div>
-            <h2 onClick={() => this.props.toggleExpanded()} className="attribute-history-title">
-                { /* <div style="attribute-history-arrow">{this.props.isExpanded ? "▲" : "▼"}</div> */ }
-                {this.props.historyKey}
-            </h2>
+            <div className="attribute-history-title">
+                <h2 onClick={() => this.props.toggleExpanded()} style={{display: 'inline-block'}}>
+                    { /* <div style="attribute-history-arrow">{this.props.isExpanded ? "▲" : "▼"}</div> */ }
+                    {this.props.historyKey}
+                </h2>
+                <div style={{float: 'right', opacity: .5, fontSize: 10}}>most recent on top</div>
+            </div>
 
             <div className="attribute-history-list-container">
                 {(this.props.isExpanded || true) ? this.props.history.map(function(history){
