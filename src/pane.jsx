@@ -109,6 +109,7 @@ class ElementHistory extends React.Component {
                 const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
                 return <div>
                     <AttributeHistory
+                        key={historyKey}
                         historyKey={historyKey}
                         history={this.props.history[historyKey]}
                         isExpanded={isExpanded}
@@ -156,7 +157,7 @@ class AttributeHistory extends React.Component {
                     } else {
                         newValue = '"' + newValue + '"'
                     }
-                    return <div className="attribute-history-item">
+                    return <div className="attribute-history-item" key={history.newValue + history.callstack}>
                         <div>
                             <div className="attribute-history-item_action-type">
                                 {history.actionType} {printCallStackButton}
