@@ -11,11 +11,14 @@ if (chrome.devtools) {
         update()
     });
     function update(){
-        chrome.devtools.inspectedWindow.eval("({history: $0.__elementHistory})", function (res) {
+        chrome.devtools.inspectedWindow.eval(`({
+            history: $0.__elementHistory,
+            trackingEnabled: window.trackHistEnabled
+        })`, function (res) {
             if (!res) {
                 res = {}
             }
-            ReactDom.render(<ElementHistory history={res.history} />, document.querySelector("#app"))   
+            ReactDom.render(<ElementHistory history={res.history} trackingEnabled={res.trackingEnabled} />, document.querySelector("#app"))   
         });
     }
 } else { 
@@ -59,7 +62,7 @@ if (chrome.devtools) {
                 }
             ]
         }
-        ReactDom.render(<ElementHistory history={h} />, document.querySelector("#app"))   
+        ReactDom.render(<ElementHistory history={h} trackingEnabled={true} />, document.querySelector("#app"))   
     })
 }
 
@@ -73,17 +76,24 @@ class ElementHistory extends React.Component {
     }
     render() {
         if (!this.props.history) {
+            let enableTrackingMessage = null
+            let noDataMessage = null
+            if (!this.props.trackingEnabled) {
+                enableTrackingMessage = <p>Element history tracking is disabled in this tab - click the orange icon next to the address bar.</p>
+            } else {
+                noDataMessage = <div>
+                    <p>
+                        No history available for this element. May it hasn't changed since page load, or since tracking was enabled?
+                    </p>
+                    <p>
+                        Attribute change not tracked properly? Report missing tracking <a target="_blank" href="https://github.com/mattzeunert/ElementHistory/issues">here</a>.
+                    </p>
+                </div>
+            }
+
             return <div style={{padding: 5}}>
-                <p>
-                    No history available for this element.
-                </p>
-                <p>
-                    Do you have history collection enabled in this tab? Was it enabled when this element was updated?
-                </p>
-                {/* todo: i know if user has histoyr collection enabled inthis tab, instead if they don't have it eanbled and there's not histoyr tell them how to enable */}
-                <p>
-                    Attribute change not tracked properly? Report missing tracking <a target="_blank" href="https://github.com/mattzeunert/ElementHistory/issues">here</a>.
-                </p>
+                {enableTrackingMessage}
+                {noDataMessage}
             </div>
         }
 
