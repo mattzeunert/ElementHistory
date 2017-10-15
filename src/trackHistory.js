@@ -1,4 +1,4 @@
-const NotApplicable = 'ElementHistory value: not applicable'
+var NotApplicable = 'ElementHistory value: not applicable'
 
 var trackingEventTypes = [
     {
