@@ -39,8 +39,8 @@ describe("A suite", function() {
     expect(lastHistoryItem.newValue).toEqual('cake')
   })
 
-  describe("Tracks class assignments when creating element by assigning to innerHTML", function(){
-    it("", function(){
+  describe("Tracks attributes when creating element by assigning to innerHTML", function(){
+    it("Tracks classnames", function(){
       var parentEl = document.createElement('div')
       parentEl.innerHTML = '<div class="cake"></div>'
       var el = parentEl.children[0]
@@ -50,10 +50,20 @@ describe("A suite", function() {
       expect(lastHistoryItem.oldValue).toEqual(null)
       expect(lastHistoryItem.newValue).toEqual('cake')
     })
+    it("Tracks arbitray attributes", function(){
+      var parentEl = document.createElement('div')
+      parentEl.innerHTML = '<div something="cake"></div>'
+      var el = parentEl.children[0]
+      var lastHistoryItem = getLastHistoryItem(el, 'something')
+      expect(lastHistoryItem.actionType).toEqual('innerHTML assignment on parent')
+      expect(lastHistoryItem.actionArguments).toEqual([parentEl, '<div something="cake"></div>'])
+      expect(lastHistoryItem.oldValue).toEqual(null)
+      expect(lastHistoryItem.newValue).toEqual('cake')
+    })
     it("has correct callstack for nested items", function(){
       var parentEl = document.createElement('div')
       function functionName() {
-        parentEl.innerHTML = '<div><span className="sth"></span></div>'
+        parentEl.innerHTML = '<div><span class="sth"></span></div>'
       }
       functionName()
       var el = parentEl.children[0].children[0]

@@ -128,12 +128,18 @@ function load() {
                         var ret = originalDescriptor.set.apply(this, arguments)
                         var parentEl = this;
                         iterateOverAllChildren(this, function(child) {
-                            addHistoryItem(child, 'className', {
-                                actionType: "innerHTML assignment on parent",
-                                actionArguments: [parentEl, innerHTML],
-                                oldValue: null,
-                                newValue: child.className,
-                                error: error
+                            Array.from(child.attributes).forEach(function(attr){
+                                var name = attr.name
+                                if (name == 'class') {
+                                    name = 'className'
+                                }
+                                addHistoryItem(child, name, {
+                                    actionType: "innerHTML assignment on parent",
+                                    actionArguments: [parentEl, innerHTML],
+                                    oldValue: null,
+                                    newValue: attr.value,
+                                    error: error
+                                })
                             })
                             addHistoryItem(child, 'ElementCreation', {
                                 actionType: "innerHTML assignment on parent",
