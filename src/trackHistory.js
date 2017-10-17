@@ -264,7 +264,17 @@ function load() {
         data.id = id++
         data.date = new Date().toString()
         element.__elementHistory[key].unshift(data)
-        // console.log("added history", key, data.actionType)
+
+        // code for detecting lack of tracking
+        /*
+        if (element.__elementHistory[key].length > 1) {
+            var previousHistoryItem = element.__elementHistory[key][1]
+            if (previousHistoryItem.newValue !== data.oldValue) {
+                // something wasn't tracked
+                debugger
+            }
+        }
+        */
     }
     
     function disableTracking(){
