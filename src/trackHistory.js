@@ -19,6 +19,20 @@ function load() {
         },
         {
             obj: Element.prototype,
+            fnName: 'removeAttribute',
+            getValue(attrName, attrValue) {
+                return this.getAttribute(attrName)
+            },
+            getActionInfo(attrName){
+                return {
+                    actionType: 'removeAttribute call',
+                    historyKey: attrName,
+                    actionArguments: [attrName]
+                }
+            }
+        },
+        {
+            obj: Element.prototype,
             fnName: 'appendChild',
             getValue() {
                 return NotApplicable

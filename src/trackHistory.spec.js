@@ -103,4 +103,17 @@ describe("A suite", function() {
       expect(lastHistoryItem.newValue).toBe("min-height: 20px;")
     })
   })
+
+  describe("removeAttribute", function() {
+    it("Tracks when removeAttribute is called", function(){
+      var el = document.createElement('div')
+      el.setAttribute('something', 'cake')
+      el.removeAttribute('something')
+      var lastHistoryItem = getLastHistoryItem(el, 'something')
+      expect(lastHistoryItem.actionType).toEqual('removeAttribute call')
+      expect(lastHistoryItem.actionArguments).toEqual(['something'])
+      expect(lastHistoryItem.oldValue).toEqual('cake')
+      expect(lastHistoryItem.newValue).toEqual(null)
+    })
+  })
 });
