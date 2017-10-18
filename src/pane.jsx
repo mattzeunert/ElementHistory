@@ -11,10 +11,30 @@ if (chrome.devtools) {
         update()
     });
     function update(){
-        chrome.devtools.inspectedWindow.eval(`({
-            history: $0.__elementHistory,
-            trackingEnabled: window.trackHistEnabled
-        })`, function (res) {
+        chrome.devtools.inspectedWindow.eval(`
+            (window.___getHist = function getHist() {
+                var hist = $0.__elementHistory
+                if (!hist) {
+                    return null
+                }
+                var ret = {}
+                Object.keys(hist).forEach(function(prop) {
+                    ret[prop] = hist[prop].map(function(histItem) {
+                        var newItem = {}
+                        Object.keys(histItem).forEach(function(key) {
+                            if (key !== 'actionArguments') { // actionarguments can contain stuff that's hard to serialize, like dom elements
+                                newItem[key] = histItem[key]
+                            }
+                        })
+                        return newItem
+                    })
+                })
+                return ret
+            })
+            ,({
+                history: ___getHist(),
+                trackingEnabled: window.trackHistEnabled
+            })`, function (res) {
             if (!res) {
                 res = {}
             }
