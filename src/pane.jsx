@@ -83,7 +83,7 @@ class ElementHistory extends React.Component {
             } else {
                 noDataMessage = <div>
                     <p>
-                        No history available for this element. May it hasn't changed since page load, or since tracking was enabled?
+                        No history available for this element. Maybe it hasn't changed since page load, or since tracking was enabled?
                     </p>
                     <p>
                         Attribute change not tracked properly? Report missing tracking <a target="_blank" href="https://github.com/mattzeunert/ElementHistory/issues">here</a>.
