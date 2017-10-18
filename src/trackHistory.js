@@ -305,10 +305,12 @@ function load() {
         // code for detecting lack of tracking
         /*
         if (element.__elementHistory[key].length > 1) {
-            var previousHistoryItem = element.__elementHistory[key][1]
-            if (previousHistoryItem.newValue !== data.oldValue) {
-                // something wasn't tracked
-                debugger
+            if (key !== 'disabled') { // disabled has some acceptable inconsistencies between el.disabled and el.setAttr('disabled', ...)
+                var previousHistoryItem = element.__elementHistory[key][1]
+                if (previousHistoryItem.newValue !== data.oldValue) {
+                    // something wasn't tracked
+                    debugger
+                }
             }
         }
         */
