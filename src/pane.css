@@ -27,7 +27,8 @@ h2 {
     padding-top: 2px;
     font-family: monospace;
 }
-.attribute-history-item_new-value.attribute-history-item_new-value--na {
+.attribute-history-item_new-value.attribute-history-item_new-value--na,
+.attribute-history-item_new-value.attribute-history-item_new-value--null {
     color: #777;
 }
 

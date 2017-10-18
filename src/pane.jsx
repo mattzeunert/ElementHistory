@@ -167,6 +167,9 @@ class AttributeHistory extends React.Component {
                     if (newValue === NotApplicable) {
                         newValue = '(n/a)'
                         newValueClassName += ' attribute-history-item_new-value--na'
+                    } else if (newValue === null) {
+                        newValueClassName += ' attribute-history-item_new-value--null'
+                        newValue = 'null'
                     } else {
                         newValue = '"' + newValue + '"'
                     }
