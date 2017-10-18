@@ -72,6 +72,36 @@ describe("A suite", function() {
     })
   })
 
+  describe("input element", function(){
+    it("Tracks explicit 'disabled' assignment", function(){
+      var el = document.createElement('input')
+      el.disabled = true
+      
+      var lastHistoryItem = getLastHistoryItem(el, 'disabled')
+      expect(lastHistoryItem.actionType).toEqual('disabled assignment')
+      expect(lastHistoryItem.oldValue).toEqual(false)
+      expect(lastHistoryItem.newValue).toEqual(true)
+    })
+    it("Tracks explicit 'checked' assignment", function(){
+      var el = document.createElement('input')
+      el.checked = true
+      
+      var lastHistoryItem = getLastHistoryItem(el, 'checked')
+      expect(lastHistoryItem.actionType).toEqual('checked assignment')
+      expect(lastHistoryItem.oldValue).toEqual(false)
+      expect(lastHistoryItem.newValue).toEqual(true)
+    })
+    it("Tracks explicit 'disabled' assignment", function(){
+      var el = document.createElement('input')
+      el.value = "Hello"
+      
+      var lastHistoryItem = getLastHistoryItem(el, 'value')
+      expect(lastHistoryItem.actionType).toEqual('value assignment')
+      expect(lastHistoryItem.oldValue).toEqual('')
+      expect(lastHistoryItem.newValue).toEqual("Hello")
+    })
+  })
+
 
   describe("Tracking element creation", function(){
     it("Tracks when elements are created using createElement", function(){

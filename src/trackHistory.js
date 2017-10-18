@@ -18,6 +18,20 @@ function load() {
             }
         },
         {
+            obj: HTMLInputElement.prototype,
+            keys: ['disabled', 'value', 'checked'],
+            getValue(newValue, key) {
+                return this[key]
+            },
+            getActionInfo(newValue, key) {
+                return {
+                    actionType: key + ' assignment',
+                    historyKey: key,
+                    actionArguments: newValue
+                }
+            }
+        },
+        {
             obj: Element.prototype,
             fnName: 'removeAttribute',
             getValue(attrName, attrValue) {
@@ -69,7 +83,7 @@ function load() {
         },
         {
             obj: Element.prototype,
-            key: 'className',
+            keys: ['className'],
             getValue: function(){
                 return this.className
             },
@@ -232,25 +246,28 @@ function load() {
                     return ret
                 }
             }
-            else if (trackingEventType.obj && trackingEventType.key) {
-                var originalDescriptor = Object.getOwnPropertyDescriptor(trackingEventType.obj, trackingEventType.key)
-                Object.defineProperty(trackingEventType.obj, trackingEventType.key, {
-                    get: function(){
-                        return originalDescriptor.get.apply(this, arguments)
-                    },
-                    set: function(){
-                        var before = trackingEventType.getValue.apply(this, arguments)
-                        var actionInfo = trackingEventType.getActionInfo.apply(this, arguments)                        
-                        var ret = originalDescriptor.set.apply(this, arguments)
-                        var after = trackingEventType.getValue.apply(this, arguments)
-                        addHistoryItem(this, actionInfo.historyKey, {
-                            oldValue: before,
-                            newValue: after,
-                            actionArguments: actionInfo.actionArguments,
-                            actionType: actionInfo.actionType
-                        })
-                        return ret
-                    }
+            else if (trackingEventType.obj && trackingEventType.keys) {
+                trackingEventType.keys.forEach(function(key) {
+                    var originalDescriptor = Object.getOwnPropertyDescriptor(trackingEventType.obj, key)
+                    Object.defineProperty(trackingEventType.obj, key, {
+                        get: function(){
+                            return originalDescriptor.get.apply(this, arguments)
+                        },
+                        set: function(){
+                            var argsAndKey = [...arguments, key]
+                            var before = trackingEventType.getValue.apply(this, argsAndKey)
+                            var actionInfo = trackingEventType.getActionInfo.apply(this, argsAndKey)                        
+                            var ret = originalDescriptor.set.apply(this, argsAndKey)
+                            var after = trackingEventType.getValue.apply(this, argsAndKey)
+                            addHistoryItem(this, actionInfo.historyKey, {
+                                oldValue: before,
+                                newValue: after,
+                                actionArguments: actionInfo.actionArguments,
+                                actionType: actionInfo.actionType
+                            })
+                            return ret
+                        }
+                    })
                 })
             } else if (trackingEventType.enable && trackingEventType.disable) {
                 trackingEventType.enable()
