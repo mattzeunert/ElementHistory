@@ -130,9 +130,6 @@ function load() {
                         iterateOverAllChildren(this, function(child) {
                             Array.from(child.attributes).forEach(function(attr){
                                 var name = attr.name
-                                if (name == 'class') {
-                                    name = 'className'
-                                }
                                 addHistoryItem(child, name, {
                                     actionType: "innerHTML assignment on parent",
                                     actionArguments: [parentEl, innerHTML],
@@ -268,6 +265,9 @@ function load() {
     
     
     function addHistoryItem(element, key, data){
+        if (key === "class") {
+            key = "className"
+        }
         if (!element.__elementHistory) {
             element.__elementHistory = {}
         }
