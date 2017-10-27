@@ -192,7 +192,12 @@ class AttributeHistory extends React.Component {
                     return <div className="attribute-history-item" key={history.id} onClick={() => {
                             const historyWithoutCallStack = Object.assign({}, history)
                             delete historyWithoutCallStack.callstack
-                            chrome.devtools.inspectedWindow.eval(`console.log(JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}")));console.log(decodeURI("${encodeURI(history.callstack)}"))`)
+                            chrome.devtools.inspectedWindow.eval(`
+                                var historyItem = JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}"));
+                                var { actionType, date, newValue, oldValue } = historyItem
+                                console.log({ actionType, date, newValue, oldValue });
+                                console.log(decodeURI("${encodeURI(history.callstack)}"))
+                            `)
                         }}>
                         <div>
                             <div className="attribute-history-item_action-type">
