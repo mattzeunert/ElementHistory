@@ -177,11 +177,7 @@ class AttributeHistory extends React.Component {
                 {(this.props.isExpanded || true) ? this.props.history.map(function(history){
                     //var frames = ErrorStackParser.parse({stack: history.callstack}) 
                     //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
-                    var printCallStackButton = <button className="print-callstack-button" onClick={() => {
-                        const historyWithoutCallStack = Object.assign({}, history)
-                        delete historyWithoutCallStack.callstack
-                        chrome.devtools.inspectedWindow.eval(`console.log(JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}")));console.log(decodeURI("${encodeURI(history.callstack)}"))`)
-                    }}>Print callstack</button>
+                    var printCallStackButton = <button className="print-callstack-button">Print callstack</button>
                     let newValue = history.newValue
                     let newValueClassName = 'attribute-history-item_new-value '
                     if (newValue === NotApplicable) {
@@ -193,7 +189,11 @@ class AttributeHistory extends React.Component {
                     } else {
                         newValue = '"' + newValue + '"'
                     }
-                    return <div className="attribute-history-item" key={history.id}>
+                    return <div className="attribute-history-item" key={history.id} onClick={() => {
+                            const historyWithoutCallStack = Object.assign({}, history)
+                            delete historyWithoutCallStack.callstack
+                            chrome.devtools.inspectedWindow.eval(`console.log(JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}")));console.log(decodeURI("${encodeURI(history.callstack)}"))`)
+                        }}>
                         <div>
                             <div className="attribute-history-item_action-type">
                                 {history.actionType} {printCallStackButton}
