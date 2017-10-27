@@ -76,7 +76,7 @@ if (chrome.devtools) {
                         "background: red"
                     ],
                     "oldValue": null,
-                    "newValue": "background: red",
+                    "newValue": "background: red; color: blue; url: url(https://github.com/)",
                     "callstack": "    at <anonymous>:1:4",
                     "date": "2017-09-05T16:46:59.278Z"
                 }
@@ -137,7 +137,7 @@ class ElementHistory extends React.Component {
         return <div>
             {historyKeys.map((historyKey) => {
                 const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
-                return <div>
+                return <div className="attribute-history">
                     <AttributeHistory
                         key={historyKey}
                         historyKey={historyKey}
@@ -170,7 +170,7 @@ class AttributeHistory extends React.Component {
                     { /* <div style="attribute-history-arrow">{this.props.isExpanded ? "▲" : "▼"}</div> */ }
                     {this.props.historyKey}
                 </h2>
-                <div style={{float: 'right', opacity: .5, fontSize: 10}}>most recent on top</div>
+                <div className="most-recent-on-top">most recent on top</div>
             </div>
 
             <div className="attribute-history-list-container">
