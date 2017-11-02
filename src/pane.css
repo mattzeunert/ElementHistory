@@ -7,7 +7,6 @@ body {
 }
 h2 {
     margin: 0;
-    margin-bottom: 2px;
     font-size: 12px;
 }
 .attribute-history-item {
@@ -79,4 +78,11 @@ h2 {
 }
 .attribute-history-title:hover .most-recent-on-top {
     display: block;
+}
+
+#search-field {
+    width: 100%;
+    padding: 5px;
+    border: 0;
+    outline: none;
 }

@@ -91,7 +91,8 @@ class ElementHistory extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            expandedHistoryKeys: []
+            expandedHistoryKeys: [],
+            searchTerm: ''
         }
     }
     render() {
@@ -132,37 +133,73 @@ class ElementHistory extends React.Component {
             return historyKey
         })
         
+        let hasItems = false
+        const attributeHistories = historyKeys.map((historyKey) => {
+            const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
+
+            const searchTerm = this.state.searchTerm
+            let visibleHistory = this.props.history[historyKey]
+            if (!matchesSearchTerm(historyKey, searchTerm)) {
+                visibleHistory = this.props.history[historyKey].filter(function(history) {
+                    return (
+                        matchesSearchTerm(history.newValue, searchTerm) ||
+                        matchesSearchTerm(history.actionType, searchTerm)
+                    )
+                })
+            }
+            if (visibleHistory.length > 0) {
+                hasItems = true
+            }
+            
+            
+            return <div className="attribute-history">
+                <AttributeHistory
+                    key={historyKey}
+                    historyKey={historyKey}
+                    history={this.props.history[historyKey]}
+                    isExpanded={isExpanded}
+                    visibleHistory={visibleHistory}
+                    toggleExpanded={() => {
+                        if (isExpanded) {
+                            this.setState({
+                                expandedHistoryKeys: this.state.expandedHistoryKeys.filter(k => k !== historyKey)
+                            })
+                        } else {
+                            this.setState({
+                                expandedHistoryKeys: this.state.expandedHistoryKeys.concat([historyKey])
+                            })
+                        }
+                    }}
+                />
+            </div>
+        })
+
 
 
         return <div>
-            {historyKeys.map((historyKey) => {
-                const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
-                return <div className="attribute-history">
-                    <AttributeHistory
-                        key={historyKey}
-                        historyKey={historyKey}
-                        history={this.props.history[historyKey]}
-                        isExpanded={isExpanded}
-                        toggleExpanded={() => {
-                            if (isExpanded) {
-                                this.setState({
-                                    expandedHistoryKeys: this.state.expandedHistoryKeys.filter(k => k !== historyKey)
-                                })
-                            } else {
-                                this.setState({
-                                    expandedHistoryKeys: this.state.expandedHistoryKeys.concat([historyKey])
-                                })
-                            }
-                        }}
-                    />
-                </div>
-            })}
+            <input
+                id="search-field"
+                type="text"
+                placeholder="Filter"
+                value={this.state.searchTerm}
+                onChange={(e) => this.setState({searchTerm: e.target.value})}></input>
+            {attributeHistories}
+            {!hasItems && <p style={{padding: 5, borderTop: '1px solid #ddd', margin: 0, color: "#777"}}>
+                No matching history items found.
+            </p>}
         </div>
     }
 }
 
+function matchesSearchTerm(text, searchTerm) {
+    return text.toLowerCase().includes(searchTerm.toLowerCase())
+}
+
 class AttributeHistory extends React.Component {
     render() {
+        if (this.props.visibleHistory.length === 0) {
+            return null
+        }
         
         return <div>
             <div className="attribute-history-title">
@@ -174,7 +211,7 @@ class AttributeHistory extends React.Component {
             </div>
 
             <div className="attribute-history-list-container">
-                {(this.props.isExpanded || true) ? this.props.history.map(function(history){
+                {(this.props.isExpanded || true) ? this.props.visibleHistory.map(function(history){
                     //var frames = ErrorStackParser.parse({stack: history.callstack}) 
                     //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
                     var printCallStackButton = <button className="print-callstack-button">Print callstack</button>
