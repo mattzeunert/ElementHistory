@@ -38,6 +38,15 @@ describe("A suite", function() {
         expect(lastHistoryItem.oldValue).toEqual("");
         expect(lastHistoryItem.newValue).toEqual("cake");
     });
+    it("Tracks classList.toggle calls", function(){
+        var el = document.createElement("div");
+        el.classList.toggle("cake");
+        var lastHistoryItem = getLastHistoryItem(el, "className");
+        expect(lastHistoryItem.actionType).toEqual("classList.toggle call");
+        expect(lastHistoryItem.actionArguments).toEqual(["cake"]);
+        expect(lastHistoryItem.oldValue).toEqual("");
+        expect(lastHistoryItem.newValue).toEqual("cake");
+    });
 
     describe("Tracks attributes when creating element by assigning to innerHTML", function(){
         it("Tracks classnames", function(){
@@ -156,4 +165,6 @@ describe("A suite", function() {
             expect(lastHistoryItem.newValue).toEqual(null);
         });
     });
+
+  
 });

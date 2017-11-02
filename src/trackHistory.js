@@ -102,6 +102,7 @@ function load() {
                     get: function(){
                         var ret = originalDescriptor.get.apply(this, arguments);
                         var originalAdd = ret.add;
+                        var originalToggle = ret.toggle
                         var el = this;
                         ret.add = function(){
                             var before = el.className;
@@ -111,6 +112,20 @@ function load() {
     
                             addHistoryItem(el, "className", {
                                 actionType: "classList.add call",
+                                actionArguments: Array.from(arguments),
+                                oldValue: before,
+                                newValue: after
+                            });
+                            return ret2;
+                        };
+                        ret.toggle = function(){
+                            var before = el.className;
+                            var ret2 = originalToggle.apply(this, arguments);
+                            var after = el.className;
+                            // console.log("called add")
+    
+                            addHistoryItem(el, "className", {
+                                actionType: "classList.toggle call",
                                 actionArguments: Array.from(arguments),
                                 oldValue: before,
                                 newValue: after
