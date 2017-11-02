@@ -65,7 +65,7 @@ if (chrome.devtools) {
                         "newclass"
                     ],
                     "oldValue": "learn-bar",
-                    "newValue": "learn-bar newclass",
+                    "newValue": "learn-bar newclass reallyreallyreallyreallylooooooooooooooooooongclassname",
                     "callstack": "    at <anonymous>:1:14",
                     "date": "2017-09-05T16:46:57.222Z",
                     id: 23222

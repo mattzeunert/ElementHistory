@@ -4,6 +4,7 @@ body {
     line-height: 14px;
     margin: 0;
     color: #222;
+    word-break: break-word;
 }
 h2 {
     margin: 0;
