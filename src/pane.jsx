@@ -213,40 +213,66 @@ class AttributeHistory extends React.Component {
             </div>
 
             <div className="attribute-history-list-container">
-                {(this.props.isExpanded || true) ? this.props.visibleHistory.map(function(history){
-                    //var frames = ErrorStackParser.parse({stack: history.callstack}) 
-                    //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
-                    var printCallStackButton = <button className="print-callstack-button">Print callstack</button>
-                    let newValue = history.newValue
-                    let newValueClassName = 'attribute-history-item_new-value '
-                    if (newValue === NotApplicable) {
-                        newValue = '(n/a)'
-                        newValueClassName += ' attribute-history-item_new-value--na'
-                    } else if (newValue === null) {
-                        newValueClassName += ' attribute-history-item_new-value--null'
-                        newValue = 'null'
-                    } else {
-                        newValue = '"' + newValue + '"'
-                    }
-                    return <div className="attribute-history-item" key={history.id} onClick={() => {
-                            const historyWithoutCallStack = Object.assign({}, history)
-                            delete historyWithoutCallStack.callstack
-                            chrome.devtools.inspectedWindow.eval(`
-                                var historyItem = JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}"));
-                                var { actionType, date, newValue, oldValue } = historyItem
-                                console.log({ actionType, date, newValue, oldValue });
-                                console.log(decodeURI("${encodeURI(history.callstack)}"))
-                            `)
-                        }}>
-                        <div>
-                            <div className="attribute-history-item_action-type">
-                                {history.actionType} {printCallStackButton}
-                            </div>
-                            <div className={newValueClassName}>{newValue}</div>
-                            
-                        </div>
-                    </div>
+                {(this.props.isExpanded || true) ? this.props.visibleHistory.map((history) => {
+                    return <AttributeHistoryItem history={history} key={history.id}  />
                 }) : null}
+            </div>
+        </div>
+    }
+}
+
+class AttributeHistoryItem extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            recentlyPrintedCallstack: false
+        }
+    }
+    render() {
+        const history = this.props.history
+
+        //var frames = ErrorStackParser.parse({stack: history.callstack}) 
+        //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
+        let printCallStackButtonText = 'Print callstack'
+        if (this.state.recentlyPrintedCallstack) {
+            printCallStackButtonText = 'Printed to console'
+        }
+        var printCallStackButton = <button className="print-callstack-button">{printCallStackButtonText}</button>
+        let newValue = history.newValue
+        let newValueClassName = 'attribute-history-item_new-value '
+        if (newValue === NotApplicable) {
+            newValue = '(n/a)'
+            newValueClassName += ' attribute-history-item_new-value--na'
+        } else if (newValue === null) {
+            newValueClassName += ' attribute-history-item_new-value--null'
+            newValue = 'null'
+        } else {
+            newValue = '"' + newValue + '"'
+        }
+        return <div className="attribute-history-item" onClick={() => {
+                const historyWithoutCallStack = Object.assign({}, history)
+                delete historyWithoutCallStack.callstack
+
+                if (chrome.devtools) { // don't have that in test.html
+                    chrome.devtools.inspectedWindow.eval(`
+                        var historyItem = JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}"));
+                        var { actionType, date, newValue, oldValue } = historyItem
+                        console.log({ actionType, date, newValue, oldValue });
+                        console.log(decodeURI("${encodeURI(history.callstack)}"))
+                    `)   
+                }
+
+                this.setState({ recentlyPrintedCallstack: true })
+                setTimeout(() => {
+                    this.setState({ recentlyPrintedCallstack: false})
+                }, 3000)
+            }}>
+            <div>
+                <div className="attribute-history-item_action-type">
+                    {history.actionType} {printCallStackButton}
+                </div>
+                <div className={newValueClassName}>{newValue}</div>
+                
             </div>
         </div>
     }
