@@ -1,81 +1,81 @@
 function load() {
-    var NotApplicable = 'ElementHistory value: not applicable'
-    let id = 1
+    var NotApplicable = "ElementHistory value: not applicable";
+    let id = 1;
     
     var trackingEventTypes = [
         {
             obj: Element.prototype,
-            fnName: 'setAttribute',
+            fnName: "setAttribute",
             getValue(attrName, attrValue) {
-                return this.getAttribute(attrName)
+                return this.getAttribute(attrName);
             },
             getActionInfo(attrName, attrValue){
                 return {
-                    actionType: 'setAttribute call',
+                    actionType: "setAttribute call",
                     historyKey: attrName,
                     actionArguments: [attrName, attrValue]
-                }
+                };
             }
         },
         {
             obj: HTMLInputElement.prototype,
-            keys: ['disabled', 'value', 'checked'],
+            keys: ["disabled", "value", "checked"],
             getValue(newValue, key) {
-                return this[key]
+                return this[key];
             },
             getActionInfo(newValue, key) {
                 return {
-                    actionType: key + ' assignment',
+                    actionType: key + " assignment",
                     historyKey: key,
                     actionArguments: newValue
-                }
+                };
             }
         },
         {
             obj: Element.prototype,
-            fnName: 'removeAttribute',
+            fnName: "removeAttribute",
             getValue(attrName, attrValue) {
-                return this.getAttribute(attrName)
+                return this.getAttribute(attrName);
             },
             getActionInfo(attrName){
                 return {
-                    actionType: 'removeAttribute call',
+                    actionType: "removeAttribute call",
                     historyKey: attrName,
                     actionArguments: [attrName]
-                }
+                };
             }
         },
         {
             obj: Element.prototype,
-            fnName: 'appendChild',
+            fnName: "appendChild",
             getValue() {
-                return NotApplicable
+                return NotApplicable;
             },
             getActionInfo(insertedElement) {
                 return {
-                    actionType: 'appendChild',
-                    historyKey: 'Insertion',
+                    actionType: "appendChild",
+                    historyKey: "Insertion",
                     actionArguments: [this]
-                }
+                };
             },
             getElement(insertedElement) {
-                return insertedElement
+                return insertedElement;
             }
         },
         {
             originalCreateElement: document.createElement,
             enable: function(){
-                originalCreateElement = this.originalCreateElement
+                originalCreateElement = this.originalCreateElement;
                 document.createElement = function(){
-                    var el = originalCreateElement.apply(this, arguments)
-                    addHistoryItem(el, 'ElementCreation', {
-                        actionType: 'document.createElement',
+                    var el = originalCreateElement.apply(this, arguments);
+                    addHistoryItem(el, "ElementCreation", {
+                        actionType: "document.createElement",
                         actionArguments: Array.from(arguments),
                         oldValue: NotApplicable,
                         newValue: NotApplicable
-                    })
-                    return el
-                }
+                    });
+                    return el;
+                };
             },
             disable: function(){
     
@@ -83,47 +83,47 @@ function load() {
         },
         {
             obj: Element.prototype,
-            keys: ['className'],
+            keys: ["className"],
             getValue: function(){
-                return this.className
+                return this.className;
             },
             getActionInfo: function(newValue){
                 return {
-                    actionType: 'className assignment',
-                    historyKey: 'className',
+                    actionType: "className assignment",
+                    historyKey: "className",
                     actionArguments: [newValue]
-                }
+                };
             }
         },
         {
             enable: function(){
-                var originalDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'classList')
-                Object.defineProperty(Element.prototype, 'classList', {
+                var originalDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, "classList");
+                Object.defineProperty(Element.prototype, "classList", {
                     get: function(){
-                        var ret = originalDescriptor.get.apply(this, arguments)
-                        var originalAdd = ret.add
-                        var el = this
+                        var ret = originalDescriptor.get.apply(this, arguments);
+                        var originalAdd = ret.add;
+                        var el = this;
                         ret.add = function(){
-                            var before = el.className
-                            var ret2 = originalAdd.apply(this, arguments)
-                            var after = el.className
+                            var before = el.className;
+                            var ret2 = originalAdd.apply(this, arguments);
+                            var after = el.className;
                             // console.log("called add")
     
-                            addHistoryItem(el, 'className', {
-                                actionType: 'classList.add call',
+                            addHistoryItem(el, "className", {
+                                actionType: "classList.add call",
                                 actionArguments: Array.from(arguments),
                                 oldValue: before,
                                 newValue: after
-                            })
-                            return ret2
-                        }
-                        return ret
+                            });
+                            return ret2;
+                        };
+                        return ret;
                     },
                     set: function(){
-                        console.log("todo: track set classList")
-                        return originalDescriptor.set.apply(this, arguments)
+                        console.log("todo: track set classList");
+                        return originalDescriptor.set.apply(this, arguments);
                     }
-                })
+                });
                 
             },
             disable: function() {
@@ -132,37 +132,37 @@ function load() {
         },
         {
             enable: function(){
-                var originalDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML")
+                var originalDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML");
                 Object.defineProperty(Element.prototype, "innerHTML", {
                     get: function(){
-                        return originalDescriptor.get.apply(this, arguments)
+                        return originalDescriptor.get.apply(this, arguments);
                     },
                     set: function(innerHTML){
-                        var error = Error()
-                        var ret = originalDescriptor.set.apply(this, arguments)
+                        var error = Error();
+                        var ret = originalDescriptor.set.apply(this, arguments);
                         var parentEl = this;
                         iterateOverAllChildren(this, function(child) {
                             Array.from(child.attributes).forEach(function(attr){
-                                var name = attr.name
+                                var name = attr.name;
                                 addHistoryItem(child, name, {
                                     actionType: "innerHTML assignment on parent",
                                     actionArguments: [parentEl, innerHTML],
                                     oldValue: null,
                                     newValue: attr.value,
                                     error: error
-                                })
-                            })
-                            addHistoryItem(child, 'ElementCreation', {
+                                });
+                            });
+                            addHistoryItem(child, "ElementCreation", {
                                 actionType: "innerHTML assignment on parent",
                                 actionArguments: [parentEl, innerHTML],
                                 oldValue: null,
                                 newValue: NotApplicable,
                                 error: error
-                            })
-                        })
-                        return ret
+                            });
+                        });
+                        return ret;
                     }
-                })
+                });
             },
             disable: function() {
                 
@@ -170,70 +170,70 @@ function load() {
         },
         {
             enable: function(){
-                var originalDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "style")
+                var originalDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "style");
                 Object.defineProperty(HTMLElement.prototype, "style", {
                     get: function(){
-                        const style = originalDescriptor.get.apply(this, arguments)
-                        var el = this
+                        const style = originalDescriptor.get.apply(this, arguments);
+                        var el = this;
                         return new Proxy(style, {
                             get(target, propKey, receiver) {
-                                return target[propKey]
+                                return target[propKey];
                             },
                             set(target, propKey, value, receiver) {
                                 const origMethod = target[propKey];
-                                const before = el.getAttribute("style")
-                                target[propKey] = value
-                                const after = el.getAttribute("style")
-                                addHistoryItem(el, 'style', {
+                                const before = el.getAttribute("style");
+                                target[propKey] = value;
+                                const after = el.getAttribute("style");
+                                addHistoryItem(el, "style", {
                                     actionType: "assign .style." + propKey,
                                     actionArguments: [value],
                                     oldValue: before,
                                     newValue: after
-                                })
+                                });
                                 // Return true, even thoug it's not super accurate
                                 // """
                                 // The set method should return a boolean value. Return true to indicate that assignment succeeded.
                                 // If the set method returns false, and the assignment happened in strict-mode code, a TypeError will be thrown.
                                 // """ - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy/handler/set
-                                return true
+                                return true;
                             }
-                        })                    
+                        });                    
                     },
                     set: function(){
-                        return originalDescriptor.set.apply(this, arguments)
+                        return originalDescriptor.set.apply(this, arguments);
                     }
-                })
+                });
             },
             disable: function(){
     
             }
         }
-    ]
+    ];
     
     function iterateOverAllChildren(el, callback){
-        el.querySelectorAll("*").forEach(callback)
+        el.querySelectorAll("*").forEach(callback);
     }
     
     function enableTracking(){
         if (window.trackHistEnabled) {
-            return
+            return;
         }
         Error.stackTraceLimit = Infinity;
-        window.trackHistEnabled = true
-        console.log("Enabling ElementHistory tracking")
+        window.trackHistEnabled = true;
+        console.log("Enabling ElementHistory tracking");
         trackingEventTypes.forEach(function(trackingEventType){
             if (trackingEventType.obj && trackingEventType.fnName) {
                 trackingEventType.originalFunction = trackingEventType.obj[trackingEventType.fnName];
                 trackingEventType.obj[trackingEventType.fnName] = function(){
-                    var before = trackingEventType.getValue.apply(this, arguments)
-                    var actionInfo = trackingEventType.getActionInfo.apply(this, arguments)
+                    var before = trackingEventType.getValue.apply(this, arguments);
+                    var actionInfo = trackingEventType.getActionInfo.apply(this, arguments);
         
-                    var ret = trackingEventType.originalFunction.apply(this, arguments)
-                    var after = trackingEventType.getValue.apply(this, arguments)
+                    var ret = trackingEventType.originalFunction.apply(this, arguments);
+                    var after = trackingEventType.getValue.apply(this, arguments);
     
-                    var element = this
+                    var element = this;
                     if (trackingEventType.getElement) {
-                        element = trackingEventType.getElement.apply(this, arguments)
+                        element = trackingEventType.getElement.apply(this, arguments);
                     }
         
                     addHistoryItem(element, actionInfo.historyKey, {
@@ -241,66 +241,66 @@ function load() {
                         actionArguments: actionInfo.actionArguments,
                         oldValue: before,
                         newValue: after
-                    })
+                    });
         
-                    return ret
-                }
+                    return ret;
+                };
             }
             else if (trackingEventType.obj && trackingEventType.keys) {
                 trackingEventType.keys.forEach(function(key) {
-                    var originalDescriptor = Object.getOwnPropertyDescriptor(trackingEventType.obj, key)
+                    var originalDescriptor = Object.getOwnPropertyDescriptor(trackingEventType.obj, key);
                     Object.defineProperty(trackingEventType.obj, key, {
                         get: function(){
-                            return originalDescriptor.get.apply(this, arguments)
+                            return originalDescriptor.get.apply(this, arguments);
                         },
                         set: function(){
-                            var argsAndKey = [...arguments, key]
-                            var before = trackingEventType.getValue.apply(this, argsAndKey)
-                            var actionInfo = trackingEventType.getActionInfo.apply(this, argsAndKey)                        
-                            var ret = originalDescriptor.set.apply(this, argsAndKey)
-                            var after = trackingEventType.getValue.apply(this, argsAndKey)
+                            var argsAndKey = [...arguments, key];
+                            var before = trackingEventType.getValue.apply(this, argsAndKey);
+                            var actionInfo = trackingEventType.getActionInfo.apply(this, argsAndKey);                        
+                            var ret = originalDescriptor.set.apply(this, argsAndKey);
+                            var after = trackingEventType.getValue.apply(this, argsAndKey);
                             addHistoryItem(this, actionInfo.historyKey, {
                                 oldValue: before,
                                 newValue: after,
                                 actionArguments: actionInfo.actionArguments,
                                 actionType: actionInfo.actionType
-                            })
-                            return ret
+                            });
+                            return ret;
                         }
-                    })
-                })
+                    });
+                });
             } else if (trackingEventType.enable && trackingEventType.disable) {
-                trackingEventType.enable()
+                trackingEventType.enable();
             }
             else {
-                throw "unknown tracking type"
+                throw "unknown tracking type";
             }
             
-        })
+        });
         
     }
     
     
     function addHistoryItem(element, key, data){
         if (key === "class") {
-            key = "className"
+            key = "className";
         }
         if (!element.__elementHistory) {
-            element.__elementHistory = {}
+            element.__elementHistory = {};
         }
         if (!element.__elementHistory[key]) {
-            element.__elementHistory[key] = []
+            element.__elementHistory[key] = [];
         }
         if (data.error) {
-            data.callstack = data.error.stack.split("\n").slice(2).join("\n")
-            delete data.errors
+            data.callstack = data.error.stack.split("\n").slice(2).join("\n");
+            delete data.errors;
         }
         else {
-            data.callstack = Error().stack.split("\n").slice(3).join("\n")
+            data.callstack = Error().stack.split("\n").slice(3).join("\n");
         }
-        data.id = id++
-        data.date = new Date().toString()
-        element.__elementHistory[key].unshift(data)
+        data.id = id++;
+        data.date = new Date().toString();
+        element.__elementHistory[key].unshift(data);
 
         // code for detecting lack of tracking
         /*
@@ -317,13 +317,13 @@ function load() {
     }
     
     function disableTracking(){
-        throw "todo"
+        throw "todo";
     }
     
-    enableTracking()
-    window.elementHistoryLoaded = true
+    enableTracking();
+    window.elementHistoryLoaded = true;
 }
 
 if (!window.elementHistoryLoaded) {
-    load()
+    load();
 }

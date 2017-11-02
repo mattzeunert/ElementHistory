@@ -1,15 +1,15 @@
-const NotApplicable = 'ElementHistory value: not applicable'
+const NotApplicable = "ElementHistory value: not applicable";
 
-var React = require("react")
-window.React = React
-var ReactDom = require("react-dom")
-var ErrorStackParser = require("error-stack-parser")
-import {sortBy} from 'lodash'
+var React = require("react");
+window.React = React;
+var ReactDom = require("react-dom");
+var ErrorStackParser = require("error-stack-parser");
+import {sortBy} from "lodash";
 
 if (chrome.devtools) {
-    update()
+    update();
     chrome.devtools.panels.elements.onSelectionChanged.addListener(function() {
-        update()
+        update();
     });
     function update(){
         chrome.devtools.inspectedWindow.eval(`
@@ -36,11 +36,11 @@ if (chrome.devtools) {
                 history: ___getHist(),
                 trackingEnabled: window.trackHistEnabled
             })`, function (res) {
-            if (!res) {
-                res = {}
-            }
-            ReactDom.render(<ElementHistory history={res.history} trackingEnabled={res.trackingEnabled} />, document.querySelector("#app"))   
-        });
+                if (!res) {
+                    res = {};
+                }
+                ReactDom.render(<ElementHistory history={res.history} trackingEnabled={res.trackingEnabled} />, document.querySelector("#app"));   
+            });
     }
 } else { 
 
@@ -85,26 +85,26 @@ if (chrome.devtools) {
                     id: 2311
                 }
             ]
-        }
-        ReactDom.render(<ElementHistory history={h} trackingEnabled={true} />, document.querySelector("#app"))   
-    })
+        };
+        ReactDom.render(<ElementHistory history={h} trackingEnabled={true} />, document.querySelector("#app"));   
+    });
 }
 
 
 class ElementHistory extends React.Component {
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             expandedHistoryKeys: [],
-            searchTerm: ''
-        }
+            searchTerm: ""
+        };
     }
     render() {
         if (!this.props.history) {
-            let enableTrackingMessage = null
-            let noDataMessage = null
+            let enableTrackingMessage = null;
+            let noDataMessage = null;
             if (!this.props.trackingEnabled) {
-                enableTrackingMessage = <p>Element history tracking is disabled in this tab - click the orange icon next to the address bar.</p>
+                enableTrackingMessage = <p>Element history tracking is disabled in this tab - click the orange icon next to the address bar.</p>;
             } else {
                 noDataMessage = <div>
                     <p>
@@ -113,16 +113,16 @@ class ElementHistory extends React.Component {
                     <p>
                         Attribute change not tracked properly? Report missing tracking <a target="_blank" href="https://github.com/mattzeunert/ElementHistory/issues">here</a>.
                     </p>
-                </div>
+                </div>;
             }
 
             return <div style={{padding: 5}}>
                 {enableTrackingMessage}
                 {noDataMessage}
-            </div>
+            </div>;
         }
 
-        let historyKeys = Object.keys(this.props.history)
+        let historyKeys = Object.keys(this.props.history);
         historyKeys =  sortBy(historyKeys, function(historyKey){
             if (historyKey === "ElementCreation") {
                 return "aaaa";
@@ -134,25 +134,25 @@ class ElementHistory extends React.Component {
             if (historyKey === "") {
 
             }
-            return historyKey
-        })
+            return historyKey;
+        });
         
-        let hasItems = false
+        let hasItems = false;
         const attributeHistories = historyKeys.map((historyKey) => {
-            const isExpanded = this.state.expandedHistoryKeys.includes(historyKey)
+            const isExpanded = this.state.expandedHistoryKeys.includes(historyKey);
 
-            const searchTerm = this.state.searchTerm
-            let visibleHistory = this.props.history[historyKey]
+            const searchTerm = this.state.searchTerm;
+            let visibleHistory = this.props.history[historyKey];
             if (!matchesSearchTerm(historyKey, searchTerm)) {
                 visibleHistory = this.props.history[historyKey].filter(function(history) {
                     return (
                         matchesSearchTerm(history.newValue, searchTerm) ||
                         matchesSearchTerm(history.actionType, searchTerm)
-                    )
-                })
+                    );
+                });
             }
             if (visibleHistory.length > 0) {
-                hasItems = true
+                hasItems = true;
             }
             
             return <div className="attribute-history" key={historyKey}>
@@ -165,16 +165,16 @@ class ElementHistory extends React.Component {
                         if (isExpanded) {
                             this.setState({
                                 expandedHistoryKeys: this.state.expandedHistoryKeys.filter(k => k !== historyKey)
-                            })
+                            });
                         } else {
                             this.setState({
                                 expandedHistoryKeys: this.state.expandedHistoryKeys.concat([historyKey])
-                            })
+                            });
                         }
                     }}
                 />
-            </div>
-        })
+            </div>;
+        });
 
 
 
@@ -186,26 +186,26 @@ class ElementHistory extends React.Component {
                 value={this.state.searchTerm}
                 onChange={(e) => this.setState({searchTerm: e.target.value})}></input>
             {attributeHistories}
-            {!hasItems && <p style={{padding: 5, borderTop: '1px solid #ddd', margin: 0, color: "#777"}}>
+            {!hasItems && <p style={{padding: 5, borderTop: "1px solid #ddd", margin: 0, color: "#777"}}>
                 No matching history items found.
             </p>}
-        </div>
+        </div>;
     }
 }
 
 function matchesSearchTerm(text, searchTerm) {
-    return text.toLowerCase().includes(searchTerm.toLowerCase())
+    return text.toLowerCase().includes(searchTerm.toLowerCase());
 }
 
 class AttributeHistory extends React.Component {
     render() {
         if (this.props.visibleHistory.length === 0) {
-            return null
+            return null;
         }
         
         return <div>
             <div className="attribute-history-title">
-                <h2 onClick={() => this.props.toggleExpanded()} style={{display: 'inline-block'}}>
+                <h2 onClick={() => this.props.toggleExpanded()} style={{display: "inline-block"}}>
                     { /* <div style="attribute-history-arrow">{this.props.isExpanded ? "▲" : "▼"}</div> */ }
                     {this.props.historyKey}
                 </h2>
@@ -214,59 +214,59 @@ class AttributeHistory extends React.Component {
 
             <div className="attribute-history-list-container">
                 {(this.props.isExpanded || true) ? this.props.visibleHistory.map((history) => {
-                    return <AttributeHistoryItem history={history} key={history.id}  />
+                    return <AttributeHistoryItem history={history} key={history.id}  />;
                 }) : null}
             </div>
-        </div>
+        </div>;
     }
 }
 
 class AttributeHistoryItem extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             recentlyPrintedCallstack: false
-        }
+        };
     }
     render() {
-        const history = this.props.history
+        const history = this.props.history;
 
         //var frames = ErrorStackParser.parse({stack: history.callstack}) 
         //var fileName = (frames[0].fileName && frames[0].fileName.split("/").pop()) || "<anonymous>"
-        let printCallStackButtonText = 'Print callstack'
+        let printCallStackButtonText = "Print callstack";
         if (this.state.recentlyPrintedCallstack) {
-            printCallStackButtonText = 'Printed to console'
+            printCallStackButtonText = "Printed to console";
         }
-        var printCallStackButton = <button className="print-callstack-button">{printCallStackButtonText}</button>
-        let newValue = history.newValue
-        let newValueClassName = 'attribute-history-item_new-value '
+        var printCallStackButton = <button className="print-callstack-button">{printCallStackButtonText}</button>;
+        let newValue = history.newValue;
+        let newValueClassName = "attribute-history-item_new-value ";
         if (newValue === NotApplicable) {
-            newValue = '(n/a)'
-            newValueClassName += ' attribute-history-item_new-value--na'
+            newValue = "(n/a)";
+            newValueClassName += " attribute-history-item_new-value--na";
         } else if (newValue === null) {
-            newValueClassName += ' attribute-history-item_new-value--null'
-            newValue = 'null'
+            newValueClassName += " attribute-history-item_new-value--null";
+            newValue = "null";
         } else {
-            newValue = '"' + newValue + '"'
+            newValue = "\"" + newValue + "\"";
         }
         return <div className="attribute-history-item" onClick={() => {
-                const historyWithoutCallStack = Object.assign({}, history)
-                delete historyWithoutCallStack.callstack
+            const historyWithoutCallStack = Object.assign({}, history);
+            delete historyWithoutCallStack.callstack;
 
-                if (chrome.devtools) { // don't have that in test.html
-                    chrome.devtools.inspectedWindow.eval(`
+            if (chrome.devtools) { // don't have that in test.html
+                chrome.devtools.inspectedWindow.eval(`
                         var historyItem = JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}"));
                         var { actionType, date, newValue, oldValue } = historyItem
                         console.log({ actionType, date, newValue, oldValue });
                         console.log(decodeURI("${encodeURI(history.callstack)}"))
-                    `)   
-                }
+                    `);   
+            }
 
-                this.setState({ recentlyPrintedCallstack: true })
-                setTimeout(() => {
-                    this.setState({ recentlyPrintedCallstack: false})
-                }, 3000)
-            }}>
+            this.setState({ recentlyPrintedCallstack: true });
+            setTimeout(() => {
+                this.setState({ recentlyPrintedCallstack: false});
+            }, 3000);
+        }}>
             <div>
                 <div className="attribute-history-item_action-type">
                     {history.actionType} {printCallStackButton}
@@ -274,7 +274,7 @@ class AttributeHistoryItem extends React.Component {
                 <div className={newValueClassName}>{newValue}</div>
                 
             </div>
-        </div>
+        </div>;
     }
 }
 

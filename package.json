@@ -24,6 +24,9 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
+    "eslint": "^4.10.0",
+    "eslint-plugin-prettier": "^2.3.1",
+    "eslint-plugin-react": "^7.4.0",
     "jasmine": "^2.8.0",
     "jasmine-core": "^2.8.0",
     "jquery": "^3.2.1",
@@ -31,6 +34,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.0",
     "karma-requirejs": "^1.1.0",
+    "prettier": "1.7.4",
     "requirejs": "^2.3.5",
     "webpack": "^3.5.5"
   },
