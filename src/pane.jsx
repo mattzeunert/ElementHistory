@@ -1,6 +1,7 @@
 const NotApplicable = 'ElementHistory value: not applicable'
 
 var React = require("react")
+window.React = React
 var ReactDom = require("react-dom")
 var ErrorStackParser = require("error-stack-parser")
 import {sortBy} from 'lodash'
@@ -55,7 +56,8 @@ if (chrome.devtools) {
                     ],
                     "actionType": "className assignment",
                     "callstack": "    at Learn.append (http://todomvc.com/examples/vanillajs/node_modules/todomvc-common/base.js:223:27)\n    at new Learn (http://todomvc.com/examples/vanillajs/node_modules/todomvc-common/base.js:193:9)\n    at Learn (http://todomvc.com/examples/vanillajs/node_modules/todomvc-common/base.js:156:11)\n    at XMLHttpRequest.xhr.onload (http://todomvc.com/examples/vanillajs/node_modules/todomvc-common/base.js:149:5)",
-                    "date": "2017-09-05T16:46:53.940Z"
+                    "date": "2017-09-05T16:46:53.940Z",
+                    id: 232
                 },
                 {
                     "actionType": "classList.add call",
@@ -65,7 +67,8 @@ if (chrome.devtools) {
                     "oldValue": "learn-bar",
                     "newValue": "learn-bar newclass",
                     "callstack": "    at <anonymous>:1:14",
-                    "date": "2017-09-05T16:46:57.222Z"
+                    "date": "2017-09-05T16:46:57.222Z",
+                    id: 23222
                 }
             ],
             "style": [
@@ -78,7 +81,8 @@ if (chrome.devtools) {
                     "oldValue": null,
                     "newValue": "background: red; color: blue; url: url(https://github.com/)",
                     "callstack": "    at <anonymous>:1:4",
-                    "date": "2017-09-05T16:46:59.278Z"
+                    "date": "2017-09-05T16:46:59.278Z",
+                    id: 2311
                 }
             ]
         }
@@ -151,10 +155,8 @@ class ElementHistory extends React.Component {
                 hasItems = true
             }
             
-            
-            return <div className="attribute-history">
+            return <div className="attribute-history" key={historyKey}>
                 <AttributeHistory
-                    key={historyKey}
                     historyKey={historyKey}
                     history={this.props.history[historyKey]}
                     isExpanded={isExpanded}
