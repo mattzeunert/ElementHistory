@@ -76,7 +76,6 @@ class ElementHistory extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            expandedHistoryKeys: [],
             searchTerm: ""
         };
     }
@@ -120,7 +119,6 @@ class ElementHistory extends React.Component {
         
         let hasItems = false;
         const attributeHistories = historyKeys.map((historyKey) => {
-            const isExpanded = this.state.expandedHistoryKeys.includes(historyKey);
 
             const searchTerm = this.state.searchTerm;
             let visibleHistory = this.props.history[historyKey];
@@ -140,19 +138,7 @@ class ElementHistory extends React.Component {
                 <AttributeHistory
                     historyKey={historyKey}
                     history={this.props.history[historyKey]}
-                    isExpanded={isExpanded}
                     visibleHistory={visibleHistory}
-                    toggleExpanded={() => {
-                        if (isExpanded) {
-                            this.setState({
-                                expandedHistoryKeys: this.state.expandedHistoryKeys.filter(k => k !== historyKey)
-                            });
-                        } else {
-                            this.setState({
-                                expandedHistoryKeys: this.state.expandedHistoryKeys.concat([historyKey])
-                            });
-                        }
-                    }}
                 />
             </div>;
         });
@@ -186,17 +172,16 @@ class AttributeHistory extends React.Component {
         
         return <div>
             <div className="attribute-history-title">
-                <h2 onClick={() => this.props.toggleExpanded()} style={{display: "inline-block"}}>
-                    { /* <div style="attribute-history-arrow">{this.props.isExpanded ? "▲" : "▼"}</div> */ }
+                <h2 style={{display: "inline-block"}}>
                     {this.props.historyKey}
                 </h2>
                 <div className="most-recent-on-top">most recent on top</div>
             </div>
 
             <div className="attribute-history-list-container">
-                {(this.props.isExpanded || true) ? this.props.visibleHistory.map((history) => {
+                {this.props.visibleHistory.map((history) => {
                     return <AttributeHistoryItem history={history} key={history.id}  />;
-                }) : null}
+                })}
             </div>
         </div>;
     }
