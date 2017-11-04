@@ -311,6 +311,10 @@ function load() {
         });
         
     }
+
+    function ElementHistoryItem(data) {
+        Object.assign(this, data);
+    }
     
     
     function addHistoryItem(element, key, data){
@@ -332,7 +336,7 @@ function load() {
         }
         data.id = id++;
         data.date = new Date().toString();
-        element.__elementHistory[key].unshift(data);
+        element.__elementHistory[key].unshift(new ElementHistoryItem(data));
 
         // code for detecting lack of tracking
         /*
