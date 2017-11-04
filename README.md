@@ -4,7 +4,7 @@ Chrome extension that shows you what code created or updated a DOM element.
 
 [Install from Chrome Webstore](https://chrome.google.com/webstore/detail/elementhistory/idhhmihgigngdppfpklkdklfaikkecge)
 
-![](https://user-images.githubusercontent.com/1303660/31585152-97c2c3b0-b182-11e7-8c34-b46a7832ffdb.png)
+![](https://user-images.githubusercontent.com/1303660/32406215-4b6876e8-c142-11e7-98d0-4069e46db63d.png)
 
 ## How to use the Chrome extension
 
@@ -20,7 +20,7 @@ Chrome extension that shows you what code created or updated a DOM element.
 
 4. You can now see the history of the selected element
 
-![](https://user-images.githubusercontent.com/1303660/31580915-a74970e6-b122-11e7-8247-ea1b6b4390a2.png)
+![](https://user-images.githubusercontent.com/1303660/32406217-52763a1a-c142-11e7-88d3-26db1d0b7c9b.png)
 
 ## Limitations
 
