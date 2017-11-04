@@ -111,6 +111,15 @@ describe("A suite", function() {
         });
     });
 
+    it("Tracks when src is set on a script tag", function(){
+        var el = document.createElement("script");
+        el.src = "http://example.com/asfdsf";
+        var lastHistoryItem = getLastHistoryItem(el, "src");
+        expect(lastHistoryItem.actionType).toBe("src assignment");
+        expect(lastHistoryItem.actionArguments[0]).toBe("http://example.com/asfdsf");
+        expect(lastHistoryItem.newValue).toBe("http://example.com/asfdsf");
+    });
+
 
     describe("Tracking element creation", function(){
         it("Tracks when elements are created using createElement", function(){

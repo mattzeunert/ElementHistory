@@ -37,6 +37,8 @@ module.exports = {
     "globals": {
         "expect": false,
         "chrome": false,
-        "require": false
+        "require": false,
+        "describe": false,
+        "it": false
     }
 };

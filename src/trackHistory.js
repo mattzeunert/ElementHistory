@@ -27,7 +27,21 @@ function load() {
                 return {
                     actionType: key + " assignment",
                     historyKey: key,
-                    actionArguments: newValue
+                    actionArguments: [newValue]
+                };
+            }
+        },
+        {
+            obj: HTMLScriptElement.prototype,
+            keys: ["src"],
+            getValue(newValue, key) {
+                return this[key]
+            },
+            getActionInfo(newValue, key) {
+                return {
+                    actionType: key + " assignment",
+                    historyKey: key,
+                    actionArguments: [newValue]
                 };
             }
         },
