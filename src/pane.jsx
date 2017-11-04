@@ -13,27 +13,8 @@ if (chrome.devtools) {
     });
     function update(){
         chrome.devtools.inspectedWindow.eval(`
-            (window.___getHist = function getHist() {
-                var hist = $0.__elementHistory
-                if (!hist) {
-                    return null
-                }
-                var ret = {}
-                Object.keys(hist).forEach(function(prop) {
-                    ret[prop] = hist[prop].map(function(histItem) {
-                        var newItem = {}
-                        Object.keys(histItem).forEach(function(key) {
-                            if (key !== 'actionArguments') { // actionarguments can contain stuff that's hard to serialize, like dom elements
-                                newItem[key] = histItem[key]
-                            }
-                        })
-                        return newItem
-                    })
-                })
-                return ret
-            })
-            ,({
-                history: ___getHist(),
+            ({
+                history: window.__elementHistory && window.__elementHistory.getSelectedElementHistory(),
                 trackingEnabled: window.__elementHistory
             })`, function (res) {
                 if (!res) {
@@ -255,11 +236,8 @@ class AttributeHistoryItem extends React.Component {
 
             if (chrome.devtools) { // don't have that in test.html
                 chrome.devtools.inspectedWindow.eval(`
-                        var historyItem = JSON.parse(decodeURI("${encodeURI(JSON.stringify(historyWithoutCallStack))}"));
-                        var { actionType, date, newValue, oldValue } = historyItem
-                        console.log({ actionType, date, newValue, oldValue });
-                        console.log(decodeURI("${encodeURI(history.callstack)}"))
-                    `);   
+                    window.__elementHistory.printHistoryInfo(${history.id})
+                `);   
             }
 
             this.setState({ recentlyPrintedCallstack: true });

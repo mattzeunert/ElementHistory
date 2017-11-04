@@ -1,5 +1,6 @@
 function load() {
     let trackHistEnabled = false;
+    let sentHistoryItemsById = {};
 
     var NotApplicable = "ElementHistory value: not applicable";
     let id = 1;
@@ -351,9 +352,43 @@ function load() {
         throw "todo";
     }
 
+    function getSelectedElementHistory() {
+        // this is used so we later can find the actual history item,
+        //  if the pane just gives us an id
+        sentHistoryItemsById = {};
+        var hist = $0.__elementHistory;
+        if (!hist) {
+            return null;
+        }
+        var ret = {};
+        Object.keys(hist).forEach(function(prop) {
+            ret[prop] = hist[prop].map(function(histItem) {
+                var newItem = {};
+                Object.keys(histItem).forEach(function(key) {
+                    if (key !== "actionArguments") { // actionarguments can contain stuff that's hard to serialize, like dom elements
+                        newItem[key] = histItem[key];
+                    }
+                });
+                sentHistoryItemsById[newItem.id] = newItem;
+                return newItem;
+            });
+        });
+        return ret;
+    }
+
+    function printHistoryInfo(historyItemId) {
+        
+        var historyItem = sentHistoryItemsById[historyItemId];
+        var { actionType, date, newValue, oldValue, actionArguments } = historyItem;
+        console.log({ actionType, date, newValue, oldValue, actionArguments });
+        console.log(historyItem.callstack);
+    }
+
     window.__elementHistory = {
         enableTracking,
-        disableTracking
+        disableTracking,
+        getSelectedElementHistory,
+        printHistoryInfo
     };
     
     window.__elementHistory.enableTracking();
