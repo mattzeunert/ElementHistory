@@ -1,4 +1,6 @@
 function load() {
+    let trackHistEnabled = false;
+
     var NotApplicable = "ElementHistory value: not applicable";
     let id = 1;
     
@@ -35,7 +37,7 @@ function load() {
             obj: HTMLScriptElement.prototype,
             keys: ["src"],
             getValue(newValue, key) {
-                return this[key]
+                return this[key];
             },
             getActionInfo(newValue, key) {
                 return {
@@ -79,7 +81,7 @@ function load() {
         {
             originalCreateElement: document.createElement,
             enable: function(){
-                originalCreateElement = this.originalCreateElement;
+                const originalCreateElement = this.originalCreateElement;
                 document.createElement = function(){
                     var el = originalCreateElement.apply(this, arguments);
                     addHistoryItem(el, "ElementCreation", {
@@ -116,7 +118,7 @@ function load() {
                     get: function(){
                         var ret = originalDescriptor.get.apply(this, arguments);
                         var originalAdd = ret.add;
-                        var originalToggle = ret.toggle
+                        var originalToggle = ret.toggle;
                         var el = this;
                         ret.add = function(){
                             var before = el.className;
@@ -244,11 +246,11 @@ function load() {
     }
     
     function enableTracking(){
-        if (window.trackHistEnabled) {
+        if (trackHistEnabled) {
             return;
         }
         Error.stackTraceLimit = Infinity;
-        window.trackHistEnabled = true;
+        trackHistEnabled = true;
         console.log("Enabling ElementHistory tracking");
         trackingEventTypes.forEach(function(trackingEventType){
             if (trackingEventType.obj && trackingEventType.fnName) {
@@ -348,11 +350,15 @@ function load() {
     function disableTracking(){
         throw "todo";
     }
+
+    window.__elementHistory = {
+        enableTracking,
+        disableTracking
+    };
     
-    enableTracking();
-    window.elementHistoryLoaded = true;
+    window.__elementHistory.enableTracking();
 }
 
-if (!window.elementHistoryLoaded) {
+if (!window.__elementHistory) {
     load();
 }

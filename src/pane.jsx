@@ -34,7 +34,7 @@ if (chrome.devtools) {
             })
             ,({
                 history: ___getHist(),
-                trackingEnabled: window.trackHistEnabled
+                trackingEnabled: window.__elementHistory
             })`, function (res) {
                 if (!res) {
                     res = {};
