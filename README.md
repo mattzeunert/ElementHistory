@@ -1,4 +1,4 @@
-# Element History
+# Element History [![CircleCI](https://circleci.com/gh/mattzeunert/ElementHistory/tree/master.svg?style=svg)](https://circleci.com/gh/mattzeunert/ElementHistory/tree/master)
 
 Chrome extension that shows you what code created or updated a DOM element.
 
