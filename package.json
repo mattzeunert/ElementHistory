@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start",
+    "test": "./node_modules/karma/bin/karma start --single-run",
+    "test-develop": "./node_modules/karma/bin/karma start",
     "develop": "webpack --watch"
   },
   "repository": {
