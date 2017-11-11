@@ -209,7 +209,11 @@ function load() {
                         var el = this;
                         return new Proxy(style, {
                             get(target, propKey, receiver) {
-                                return target[propKey];
+                                let ret = target[propKey];
+                                if (typeof ret === "function") {
+                                    ret = ret.bind(target);
+                                }
+                                return ret;
                             },
                             set(target, propKey, value, receiver) {
                                 const origMethod = target[propKey];

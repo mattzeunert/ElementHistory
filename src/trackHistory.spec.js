@@ -175,5 +175,30 @@ describe("A suite", function() {
         });
     });
 
+    describe("Doesn't break CSSStyleDeclaration methods", function() {
+        var div;
+        beforeEach(function(){
+            div = document.createElement("div");
+            div.style.backgroundColor = "red";
+        });
+        it("removeProperty", function(){
+            div.style.removeProperty("background-color");
+        });
+        it("setProperty", function(){
+            div.style.setProperty("background-color", "green");
+            expect(div.style.backgroundColor).toBe("green");
+        });
+        it("items", function(){
+            expect(div.style.item(0)).toBe("background-color");
+        });
+        it("getPropertyPriority", function() {
+            expect(div.style.getPropertyPriority("background-color")).toBe("");
+        });
+        it("getPropertyValue", function() {
+            expect(div.style.getPropertyValue("background-color")).toBe("red");
+        });
+        
+        
+    });
   
 });
