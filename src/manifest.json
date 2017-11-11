@@ -3,7 +3,7 @@
 
   "name": "ElementHistory",
   "description": "See what code created or updated a DOM element",
-  "version": "1.4",
+  "version": "1.5",
 
   "browser_action": {
   },
