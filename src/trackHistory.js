@@ -405,3 +405,4 @@ function load() {
 if (!window.__elementHistory) {
     load();
 }
+document.currentScript.remove();
