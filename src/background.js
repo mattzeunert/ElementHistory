@@ -48,7 +48,17 @@ function isEnabledInTab(tabId) {
 function onBrowserActionClicked(tab) {
     if (isEnabledInTab(tab.id)){ 
         disableInTab(tab.id);
-        // todo: actually disable tracking in this tab, don't wait till next page relaod
+        chrome.tabs.executeScript(tab.id, {
+            code: `
+                var scr = document.createElement("script")
+                var code = decodeURI("${encodeURI("window.__elementHistory.disableTracking()")}")
+                scr.innerHTML = code;
+                (document.documentElement || document.body).appendChild(scr)
+            `,
+            runAt: "document_start"
+        }, function(){
+            console.log("disabled", arguments);
+        });
     }
     else {
         enableInTab(tab.id);

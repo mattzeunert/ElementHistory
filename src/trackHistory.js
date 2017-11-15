@@ -1,6 +1,7 @@
 function load() {
     let trackHistEnabled = false;
     let sentHistoryItemsById = {};
+    let hooksAreSetUp = false;
 
     var NotApplicable = "ElementHistory value: not applicable";
     let id = 1;
@@ -251,12 +252,15 @@ function load() {
     }
     
     function enableTracking(){
-        if (trackHistEnabled) {
-            return;
-        }
         Error.stackTraceLimit = Infinity;
         trackHistEnabled = true;
         console.log("Enabling ElementHistory tracking");
+
+        if (hooksAreSetUp) {
+            return;
+        }
+        hooksAreSetUp = true;
+
         trackingEventTypes.forEach(function(trackingEventType){
             if (trackingEventType.obj && trackingEventType.fnName) {
                 trackingEventType.originalFunction = trackingEventType.obj[trackingEventType.fnName];
@@ -322,6 +326,9 @@ function load() {
     
     
     function addHistoryItem(element, key, data){
+        if (!trackHistEnabled) {
+            return;
+        }
         if (key === "class") {
             key = "className";
         }
@@ -357,7 +364,9 @@ function load() {
     }
     
     function disableTracking(){
-        throw "todo";
+        // todo: actually disable it, since right now it'll still slow things down by e.g. capturing callstack
+        console.log("Disabling ElementHistory tracking");
+        trackHistEnabled = false;
     }
 
     function getSelectedElementHistory() {
@@ -385,7 +394,6 @@ function load() {
     }
 
     function printHistoryInfo(historyItemId) {
-        
         var historyItem = sentHistoryItemsById[historyItemId];
         var { actionType, date, newValue, oldValue, actionArguments } = historyItem;
         console.log({ actionType, date, newValue, oldValue, actionArguments });
@@ -396,13 +404,19 @@ function load() {
         enableTracking,
         disableTracking,
         getSelectedElementHistory,
-        printHistoryInfo
+        printHistoryInfo,
+        isEnabled() {
+            return trackHistEnabled;
+        }
     };
-    
-    window.__elementHistory.enableTracking();
 }
 
 if (!window.__elementHistory) {
     load();
+}
+if (window.__elementHistory.isEnabled()) {
+    window.__elementHistory.disableTracking();
+} else {
+    window.__elementHistory.enableTracking();
 }
 document.currentScript.remove();
