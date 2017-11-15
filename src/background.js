@@ -91,7 +91,7 @@ function enableInTab(tabId) {
     chrome.tabs.executeScript(tabId, {
         code: `
             var scr = document.createElement("script")
-            var code = decodeURI("${encodeURI(trackHistoryCode)}")
+            var code = decodeURI("${encodeURI(trackHistoryCode  + ";window.__elementHistory.enableTracking()")}")
             scr.innerHTML = code;
             (document.documentElement || document.body).appendChild(scr)
         `,

@@ -252,6 +252,9 @@ function load() {
     }
     
     function enableTracking(){
+        if (trackHistEnabled) {
+            return
+        }
         Error.stackTraceLimit = Infinity;
         trackHistEnabled = true;
         console.log("Enabling ElementHistory tracking");
@@ -364,6 +367,9 @@ function load() {
     }
     
     function disableTracking(){
+        if (!trackHistEnabled) {
+            return;
+        }
         // todo: actually disable it, since right now it'll still slow things down by e.g. capturing callstack
         console.log("Disabling ElementHistory tracking");
         trackHistEnabled = false;
@@ -413,10 +419,5 @@ function load() {
 
 if (!window.__elementHistory) {
     load();
-}
-if (window.__elementHistory.isEnabled()) {
-    window.__elementHistory.disableTracking();
-} else {
-    window.__elementHistory.enableTracking();
 }
 document.currentScript.remove();
