@@ -4,6 +4,8 @@ function getLastHistoryItem(el, historyKey){
     return el.__elementHistory[historyKey][0];
 }
 
+window.__elementHistory.enableTracking();
+
 describe("A suite", function() {
     it("It tracks setAttribute calls", function specFunctionName() {
         var el = document.createElement("div");
