@@ -65,6 +65,17 @@ if (chrome.devtools) {
                     "date": "2017-09-05T16:46:59.278Z",
                     id: 2311
                 }
+            ],
+            "checked": [
+                {
+                    "actionType": "checkd assignment",
+                    "actionArguments": [true],
+                    "oldValue": null,
+                    "newValue": true,
+                    "callstack": "    at <anonymous>:1:4",
+                    "date": "2017-09-05T16:46:59.278Z",
+                    id: 231444
+                }
             ]
         };
         ReactDom.render(<ElementHistory history={h} trackingEnabled={true} />, document.querySelector("#app"));   
@@ -161,6 +172,7 @@ class ElementHistory extends React.Component {
 }
 
 function matchesSearchTerm(text, searchTerm) {
+    text = text + ""; // convert to string, unlike .toString this also works for `null`
     return text.toLowerCase().includes(searchTerm.toLowerCase());
 }
 
